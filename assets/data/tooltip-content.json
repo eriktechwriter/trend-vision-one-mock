@@ -1,0 +1,303 @@
+{
+  "attack-surface": {
+    "devices-tab": {
+      "title": "Devices Tab",
+      "content": "View all discovered devices including workstations, servers, and network equipment. Each device shows its risk score, operating system, and last seen timestamp.",
+      "roles": {
+        "admin": "Configure device discovery settings and manage data source integrations.",
+        "analyst": "Investigate high-risk devices and track changes in your device inventory.",
+        "ciso": "Monitor overall device security posture and compliance metrics.",
+        "viewer": "View device inventory and export reports for compliance purposes."
+      }
+    },
+    "internet-facing-tab": {
+      "title": "Internet-Facing Assets",
+      "content": "Monitor assets exposed to the internet including web servers, APIs, and cloud services. These assets require special attention as they are directly accessible to potential attackers.",
+      "roles": {
+        "admin": "Configure external attack surface monitoring and set up alerts for new exposures.",
+        "analyst": "Prioritize investigation of vulnerable internet-facing assets.",
+        "ciso": "Understand your organization's external attack surface and exposure trends.",
+        "viewer": "View internet-facing assets and their security status."
+      }
+    },
+    "accounts-tab": {
+      "title": "Accounts",
+      "content": "Track user accounts across your environment. Identify privileged accounts, inactive accounts, and accounts with weak security configurations.",
+      "roles": {
+        "admin": "Manage account discovery sources and configure account risk policies.",
+        "analyst": "Investigate suspicious account activity and privilege escalation attempts.",
+        "ciso": "Monitor privileged account usage and identity security posture.",
+        "viewer": "View account inventory and access reports."
+      }
+    },
+    "applications-tab": {
+      "title": "Applications",
+      "content": "Discover and track applications running in your environment, including web applications, SaaS services, and internal applications.",
+      "roles": {
+        "admin": "Configure application discovery and manage application inventory.",
+        "analyst": "Identify unauthorized or vulnerable applications.",
+        "ciso": "Understand application portfolio and shadow IT risks.",
+        "viewer": "View application inventory and usage statistics."
+      }
+    },
+    "cloud-resources-tab": {
+      "title": "Cloud Resources",
+      "content": "Monitor cloud infrastructure across AWS, Azure, GCP, and other cloud providers. Track VMs, storage, databases, and serverless resources.",
+      "roles": {
+        "admin": "Configure cloud provider integrations and manage cloud asset discovery.",
+        "analyst": "Investigate misconfigured cloud resources and security violations.",
+        "ciso": "Monitor cloud security posture and multi-cloud risk exposure.",
+        "viewer": "View cloud resource inventory and compliance status."
+      }
+    },
+    "apis-tab": {
+      "title": "APIs",
+      "content": "Discover and monitor APIs in your environment. Track API endpoints, authentication methods, and data exposure risks.",
+      "roles": {
+        "admin": "Configure API discovery and set up API security monitoring.",
+        "analyst": "Investigate API vulnerabilities and unauthorized API usage.",
+        "ciso": "Understand API attack surface and data exposure risks.",
+        "viewer": "View API inventory and security assessments."
+      }
+    },
+    "risk-index": {
+      "title": "Risk Index",
+      "content": "The Risk Index is a calculated score (0-100) representing your organization's overall security posture. Higher scores indicate greater risk exposure.",
+      "calculation": "Calculated based on device vulnerabilities, misconfigurations, threat intelligence, and exposure to known attack patterns.",
+      "roles": {
+        "admin": "Configure risk scoring parameters and thresholds for alerts.",
+        "analyst": "Use risk scores to prioritize investigation and remediation efforts.",
+        "ciso": "Track risk trends over time and measure security program effectiveness.",
+        "viewer": "View current risk index and historical trends."
+      }
+    },
+    "total-devices": {
+      "title": "Total Devices",
+      "content": "The total number of devices discovered in your environment. This includes all endpoints, servers, network devices, and IoT devices detected by configured data sources.",
+      "roles": {
+        "admin": "Ensure complete device coverage by configuring all available data sources.",
+        "analyst": "Monitor for unexpected changes in device count that may indicate new threats.",
+        "ciso": "Track asset inventory growth and coverage completeness.",
+        "viewer": "View total device count and inventory statistics."
+      }
+    },
+    "data-sources": {
+      "title": "Data Sources",
+      "content": "Data sources are integrations that automatically discover and inventory assets. Common sources include Active Directory, cloud providers (AWS, Azure, GCP), vulnerability scanners, and network discovery tools.",
+      "roles": {
+        "admin": "Configure and maintain data source connections. Monitor data source health and sync status.",
+        "analyst": "Understand which data sources provide visibility into different asset types.",
+        "ciso": "Ensure comprehensive coverage across all business units and environments.",
+        "viewer": "View configured data sources and their status."
+      }
+    },
+    "monthly-trend": {
+      "title": "Monthly Trend",
+      "content": "Visualizes changes in your attack surface over the past 12 months. Track growth in devices, internet-facing assets, and overall risk exposure.",
+      "roles": {
+        "admin": "Monitor discovery effectiveness and identify gaps in asset visibility.",
+        "analyst": "Identify unusual spikes that may indicate security incidents or misconfigurations.",
+        "ciso": "Track security posture improvements and measure program impact.",
+        "viewer": "View historical trends and generate reports."
+      }
+    }
+  },
+  
+  "workbench": {
+    "alerts-tab": {
+      "title": "Alerts",
+      "content": "Security alerts generated by detection rules and threat intelligence. Each alert represents a potential security incident requiring investigation.",
+      "roles": {
+        "admin": "Configure alert sources, detection rules, and escalation workflows.",
+        "analyst": "Triage, investigate, and respond to security alerts.",
+        "ciso": "Monitor alert volumes, response times, and team performance.",
+        "viewer": "View alerts and export reports for compliance purposes."
+      }
+    },
+    "investigations-tab": {
+      "title": "Investigations",
+      "content": "Active security investigations combining multiple related alerts. Investigations help you understand the full scope of an attack campaign.",
+      "roles": {
+        "admin": "Configure investigation workflows and automated correlation rules.",
+        "analyst": "Conduct investigations, document findings, and coordinate response actions.",
+        "ciso": "Monitor investigation status and ensure timely incident resolution.",
+        "viewer": "View investigation summaries and outcomes."
+      }
+    },
+    "severity-critical": {
+      "title": "Critical Severity",
+      "content": "Critical alerts require immediate action. These represent active threats, confirmed compromises, or high-impact security incidents.",
+      "sla": "Response required within 1 hour",
+      "roles": {
+        "admin": "Ensure 24/7 coverage for critical alert response.",
+        "analyst": "Immediately investigate and contain critical threats.",
+        "ciso": "Monitor critical alert trends and ensure adequate response capabilities.",
+        "viewer": "View critical alerts for awareness and reporting."
+      }
+    },
+    "severity-high": {
+      "title": "High Severity",
+      "content": "High severity alerts indicate serious security concerns that require prompt investigation within 24 hours.",
+      "sla": "Response required within 24 hours",
+      "roles": {
+        "admin": "Configure escalation for high severity alerts approaching SLA deadlines.",
+        "analyst": "Investigate high severity alerts and determine appropriate response actions.",
+        "ciso": "Monitor high severity alert resolution rates and response times.",
+        "viewer": "View high severity alerts and their resolution status."
+      }
+    },
+    "status-new": {
+      "title": "New Status",
+      "content": "Newly generated alerts that have not yet been assigned to an analyst for investigation.",
+      "roles": {
+        "admin": "Configure automatic assignment rules and load balancing.",
+        "analyst": "Review new alerts and claim those requiring investigation.",
+        "ciso": "Monitor queue depth and ensure timely alert assignment.",
+        "viewer": "View new alerts in the queue."
+      }
+    },
+    "status-in-progress": {
+      "title": "In Progress",
+      "content": "Alerts currently under active investigation by security analysts.",
+      "roles": {
+        "admin": "Monitor investigation progress and provide escalation support.",
+        "analyst": "Document investigation steps, findings, and response actions taken.",
+        "ciso": "Track investigation duration and resource allocation.",
+        "viewer": "View ongoing investigations and their current status."
+      }
+    },
+    "correlation-graph": {
+      "title": "Correlation Graph",
+      "content": "Visual representation of related security events. Shows how alerts are connected through common indicators like IP addresses, users, files, or attack techniques.",
+      "roles": {
+        "admin": "Configure correlation rules and graph visualization settings.",
+        "analyst": "Use the graph to understand attack chains and identify related incidents.",
+        "ciso": "Visualize attack campaigns and understand threat actor tactics.",
+        "viewer": "View correlation graphs for completed investigations."
+      }
+    },
+    "mitre-attack": {
+      "title": "MITRE ATT&CK",
+      "content": "Maps detected activities to the MITRE ATT&CK framework, showing which tactics and techniques were observed in the attack.",
+      "roles": {
+        "admin": "Configure MITRE ATT&CK mapping for detection rules.",
+        "analyst": "Understand attacker tactics and predict next steps in the attack chain.",
+        "ciso": "Identify gaps in detection coverage across the ATT&CK matrix.",
+        "viewer": "View MITRE ATT&CK mappings for security incidents."
+      }
+    },
+    "response-actions": {
+      "title": "Response Actions",
+      "content": "Automated and manual actions to contain and remediate threats. Includes isolating endpoints, blocking IPs, quarantining files, and disabling accounts.",
+      "roles": {
+        "admin": "Configure automated response playbooks and approval workflows.",
+        "analyst": "Execute response actions to contain threats and prevent spread.",
+        "ciso": "Monitor response effectiveness and measure mean time to contain.",
+        "viewer": "View response actions taken during incidents."
+      }
+    }
+  },
+  
+  "endpoint-inventory": {
+    "endpoints-tab": {
+      "title": "Endpoints",
+      "content": "All managed endpoints including workstations, laptops, and mobile devices. Shows agent status, security policy compliance, and last check-in time.",
+      "roles": {
+        "admin": "Deploy and manage endpoint agents. Configure security policies.",
+        "analyst": "Investigate compromised endpoints and collect forensic evidence.",
+        "ciso": "Monitor endpoint security coverage and compliance rates.",
+        "viewer": "View endpoint inventory and compliance status."
+      }
+    },
+    "servers-tab": {
+      "title": "Servers",
+      "content": "Server inventory including physical servers, virtual machines, and containers. Monitor patch status, running services, and security configurations.",
+      "roles": {
+        "admin": "Manage server agents and configure server-specific security policies.",
+        "analyst": "Investigate server compromises and lateral movement attempts.",
+        "ciso": "Monitor critical server security and compliance with hardening standards.",
+        "viewer": "View server inventory and security status."
+      }
+    },
+    "mobile-tab": {
+      "title": "Mobile Devices",
+      "content": "Mobile device inventory including smartphones and tablets. Track device compliance, app installations, and mobile threat detections.",
+      "roles": {
+        "admin": "Configure mobile device management and security policies.",
+        "analyst": "Investigate mobile threats and unauthorized app installations.",
+        "ciso": "Monitor mobile security posture and BYOD compliance.",
+        "viewer": "View mobile device inventory and compliance status."
+      }
+    },
+    "agent-status-online": {
+      "title": "Online Status",
+      "content": "Endpoint agent is connected and actively reporting security telemetry to the management server.",
+      "roles": {
+        "admin": "Ensure agents remain online and troubleshoot connectivity issues.",
+        "analyst": "Verify agent connectivity before executing response actions.",
+        "ciso": "Monitor agent uptime and coverage metrics.",
+        "viewer": "View which endpoints are currently online."
+      }
+    },
+    "agent-status-offline": {
+      "title": "Offline Status",
+      "content": "Endpoint agent has not reported to the management server for more than 24 hours. May indicate connectivity issues, powered-off devices, or agent problems.",
+      "roles": {
+        "admin": "Investigate offline agents and restore connectivity.",
+        "analyst": "Consider offline status when investigating potential compromises.",
+        "ciso": "Monitor offline agent trends and ensure adequate coverage.",
+        "viewer": "View offline endpoints and their last seen time."
+      }
+    },
+    "policy-compliance": {
+      "title": "Policy Compliance",
+      "content": "Percentage of endpoints meeting security policy requirements. Policies define required security controls like antivirus, firewall, encryption, and patch levels.",
+      "roles": {
+        "admin": "Configure security policies and remediation workflows.",
+        "analyst": "Identify non-compliant endpoints that may be vulnerable.",
+        "ciso": "Track compliance trends and measure security control effectiveness.",
+        "viewer": "View compliance rates and generate compliance reports."
+      }
+    },
+    "isolation-action": {
+      "title": "Network Isolation",
+      "content": "Isolate a compromised endpoint from the network to prevent lateral movement. The endpoint can still communicate with the management server for remediation.",
+      "roles": {
+        "admin": "Configure isolation policies and network access controls.",
+        "analyst": "Isolate compromised endpoints during active incident response.",
+        "ciso": "Monitor isolation usage and ensure proper containment procedures.",
+        "viewer": "View which endpoints are currently isolated."
+      }
+    },
+    "patch-status": {
+      "title": "Patch Status",
+      "content": "Shows operating system and application patch levels. Identifies missing critical security updates and vulnerable software versions.",
+      "roles": {
+        "admin": "Configure patch management policies and deployment schedules.",
+        "analyst": "Prioritize investigation of unpatched systems with known exploits.",
+        "ciso": "Monitor patch compliance and vulnerability exposure.",
+        "viewer": "View patch status and generate vulnerability reports."
+      }
+    },
+    "installed-software": {
+      "title": "Installed Software",
+      "content": "Complete inventory of installed applications on each endpoint. Helps identify unauthorized software, outdated versions, and potential security risks.",
+      "roles": {
+        "admin": "Configure software inventory collection and application control policies.",
+        "analyst": "Identify malicious or unauthorized software during investigations.",
+        "ciso": "Monitor software license compliance and shadow IT usage.",
+        "viewer": "View software inventory and generate asset reports."
+      }
+    },
+    "forensics": {
+      "title": "Forensic Evidence Collection",
+      "content": "Collect forensic evidence from endpoints including memory dumps, disk images, event logs, and file artifacts for detailed investigation.",
+      "roles": {
+        "admin": "Configure forensic collection policies and storage retention.",
+        "analyst": "Collect and analyze forensic evidence during incident investigations.",
+        "ciso": "Ensure forensic capabilities meet legal and compliance requirements.",
+        "viewer": "View forensic collection history and evidence inventory."
+      }
+    }
+  }
+}

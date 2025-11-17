@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Endpoint Inventory - Trend Vision One™</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/pages.css">
+    
+    <style>
+        /* Page-specific layout */
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        /* Top Header */
+        .top-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: var(--color-bg-secondary);
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-lg);
+            z-index: var(--z-sticky);
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--tm-red) 0%, var(--tm-red-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-lg);
+        }
+        
+        .product-name {
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+        }
+        
+        .page-title {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .header-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .demo-badge {
+            background-color: var(--color-warning);
+            color: var(--color-text-primary);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+        }
+        
+        .search-box {
+            background-color: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--color-text-secondary);
+            width: 200px;
+            font-size: var(--font-size-sm);
+        }
+        
+        .search-box::placeholder {
+            color: var(--color-text-muted);
+        }
+        
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            font-size: var(--font-size-lg);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
+        }
+        
+        .icon-btn:hover {
+            background-color: var(--color-bg-hover);
+            color: var(--color-text-primary);
+        }
+        
+        /* Side Navigation */
+        .side-nav {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 240px;
+            height: calc(100vh - 60px);
+            background-color: var(--color-bg-secondary);
+            border-right: 1px solid var(--color-border);
+            overflow-y: auto;
+            z-index: var(--z-base);
+        }
+        
+        /* Main Content Area */
+        .main-container {
+            margin-top: 60px;
+            margin-left: 240px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        /* Page Header */
+        .page-header {
+            background-color: var(--color-bg-primary);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--spacing-lg);
+        }
+        
+        .page-header-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .help-icon {
+            font-size: var(--font-size-sm);
+            color: var(--tm-red-light);
+            cursor: help;
+        }
+        
+        .page-header-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg);
+            background-color: var(--color-bg-secondary);
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .toolbar-left {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+        
+        .toolbar-search {
+            position: relative;
+            width: 300px;
+        }
+        
+        .toolbar-search input {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) 36px;
+            background-color: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text-primary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .toolbar-search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-text-muted);
+        }
+        
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background-color: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .filter-btn:hover {
+            background-color: var(--color-bg-hover);
+            border-color: var(--color-border-light);
+        }
+        
+        .toolbar-right {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        /* Device Table */
+        .device-table-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+        }
+        
+        .device-count {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        thead {
+            background-color: var(--color-bg-tertiary);
+        }
+        
+        th {
+            text-align: left;
+            padding: var(--spacing-md);
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+            font-weight: var(--font-weight-semibold);
+            border-bottom: 1px solid var(--color-border);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+        
+        th .help-icon {
+            margin-left: var(--spacing-xs);
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+        
+        th:hover .help-icon {
+            opacity: 1;
+        }
+        
+        td {
+            padding: var(--spacing-md);
+            font-size: var(--font-size-sm);
+            border-bottom: 1px solid var(--color-border);
+            color: var(--color-text-secondary);
+        }
+        
+        tbody tr {
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+        
+        tbody tr:hover {
+            background-color: var(--color-bg-hover);
+        }
+        
+        tbody tr.selected {
+            background-color: var(--color-bg-tertiary);
+            border-left: 3px solid var(--tm-red);
+        }
+        
+        .device-name {
+            color: var(--tm-red-light);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .risk-score {
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .risk-critical {
+            color: var(--severity-critical);
+        }
+        
+        .risk-high {
+            color: var(--severity-high);
+        }
+        
+        .risk-medium {
+            color: var(--severity-medium);
+        }
+        
+        .risk-low {
+            color: var(--severity-low);
+        }
+        
+        .status-online {
+            color: var(--color-success);
+        }
+        
+        .status-offline {
+            color: var(--color-text-muted);
+        }
+        
+        /* Device Detail Panel */
+        .device-detail-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 500px;
+            height: 100vh;
+            background-color: var(--color-bg-secondary);
+            border-left: 1px solid var(--color-border);
+            box-shadow: var(--shadow-xl);
+            transform: translateX(100%);
+            transition: transform var(--transition-slow);
+            z-index: var(--z-overlay);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .device-detail-panel.open {
+            transform: translateX(0);
+        }
+        
+        .device-detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--color-border);
+            background-color: var(--color-bg-tertiary);
+        }
+        
+        .device-detail-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin: 0;
+        }
+        
+        .device-detail-close {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            font-size: 28px;
+            line-height: 1;
+            color: var(--color-text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .device-detail-close:hover {
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-hover);
+        }
+        
+        .device-detail-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+        }
+        
+        .detail-section {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .detail-section-title {
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-md);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-md);
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+        
+        .detail-label {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-value {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .detail-value.highlight {
+            color: var(--tm-red-light);
+        }
+        
+        .device-detail-actions {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--color-border);
+            background-color: var(--color-bg-tertiary);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="logo-section">
+            <div class="logo-icon">T</div>
+            <span class="product-name">Trend Vision One™</span>
+            <span class="page-title">Endpoint Inventory</span>
+        </div>
+        <div class="header-actions">
+            <span class="demo-badge">POC DEMO</span>
+            <input type="text" class="search-box" placeholder="Search devices...">
+            <button class="icon-btn">🕐</button>
+            <button class="icon-btn">📊</button>
+            <button class="icon-btn" id="helpButton">❓</button>
+            <button class="icon-btn">🔔</button>
+            <div id="userSelector"></div>
+        </div>
+    </header>
+    
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <a href="attack-surface.html">Attack Surface Discovery</a>
+        <a href="workbench.html">Workbench</a>
+        <a href="endpoint-inventory.html" class="active">Endpoint Inventory</a>
+    </nav>
+    
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-header-title">
+                Endpoint Inventory
+                <span class="help-icon" data-tooltip="endpoint-inventory-overview">❓</span>
+            </h1>
+            <p class="page-header-subtitle">Comprehensive view of all managed and unmanaged devices in your environment</p>
+        </div>
+        
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <div class="toolbar-search">
+                    <span class="toolbar-search-icon">🔍</span>
+                    <input type="text" placeholder="Search by device name, IP, OS, or user..." id="deviceSearch">
+                </div>
+                <button class="filter-btn">
+                    🔽 Filters
+                </button>
+                <button class="filter-btn">
+                    📅 Date Range
+                </button>
+            </div>
+            <div class="toolbar-right">
+                <button class="btn btn-sm">
+                    📤 Export
+                    <span class="help-icon" data-tooltip="export-devices">❓</span>
+                </button>
+                <button class="btn btn-sm">
+                    ⚙️ Bulk Actions
+                    <span class="help-icon" data-tooltip="bulk-actions">❓</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Device Table -->
+        <div class="device-table-container">
+            <div class="device-count">Showing <span id="deviceCount">15</span> devices</div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>
+                            Device Name
+                            <span class="help-icon" data-tooltip="device-name">❓</span>
+                        </th>
+                        <th>
+                            Risk Score
+                            <span class="help-icon" data-tooltip="risk-score">❓</span>
+                        </th>
+                        <th>Status</th>
+                        <th>Operating System</th>
+                        <th>IP Address</th>
+                        <th>Last Seen</th>
+                        <th>User</th>
+                        <th>Agent Version</th>
+                    </tr>
+                </thead>
+                <tbody id="deviceTableBody">
+                    <!-- Device rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Device Detail Panel -->
+    <aside id="deviceDetailPanel" class="device-detail-panel">
+        <div class="device-detail-header">
+            <h2 class="device-detail-title" id="deviceDetailTitle">Device Details</h2>
+            <button id="closeDeviceDetail" class="device-detail-close">×</button>
+        </div>
+        <div class="device-detail-content" id="deviceDetailContent">
+            <!-- Device details will be inserted here by JavaScript -->
+        </div>
+        <div class="device-detail-actions">
+            <button class="btn btn-primary">🔍 Investigate</button>
+            <button class="btn">🔒 Isolate Device</button>
+            <button class="btn">🔄 Refresh Data</button>
+        </div>
+    </aside>
+    
+    <!-- Help Panel (sliding from right) -->
+    <aside id="helpPanel" class="help-panel">
+        <div class="help-panel-header">
+            <div class="help-panel-title-container">
+                <h2 id="helpTitle" class="help-panel-title">Help</h2>
+            </div>
+            <button id="closeHelp" class="help-panel-close">×</button>
+        </div>
+        <div id="helpContent" class="help-panel-content">
+            <!-- Dynamic content loaded here -->
+        </div>
+    </aside>
+    
+    <!-- Tooltip Bubble -->
+    <div id="tooltipBubble" class="tooltip-bubble">
+        <div class="tooltip-header">
+            <span id="tooltipTitle"></span>
+            <button id="tooltipClose">×</button>
+        </div>
+        <div id="tooltipContent"></div>
+    </div>
+    
+    <!-- JavaScript Modules -->
+    <script src="assets/js/context-engine.js"></script>
+    <script src="assets/js/help-panel.js"></script>
+    <script src="assets/js/tooltip.js"></script>
+    <script src="assets/js/user-selector.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    <script src="assets/js/content-generator.js"></script>
+    
+    <!-- Page Initialization -->
+    <script>
+        // Mock device data
+        const mockDevices = [
+            {
+                id: 'DEV-001',
+                name: 'WIN-EXEC-01',
+                riskScore: 85,
+                status: 'online',
+                os: 'Windows 11 Pro 23H2',
+                ip: '192.168.1.101',
+                lastSeen: '2024-11-13 10:45:23',
+                user: 'john.smith@company.com',
+                agentVersion: '7.9.1234',
+                details: {
+                    hostname: 'WIN-EXEC-01.company.local',
+                    domain: 'company.local',
+                    manufacturer: 'Dell Inc.',
+                    model: 'OptiPlex 7090',
+                    serialNumber: 'SN-7090-12345',
+                    cpu: 'Intel Core i7-11700 @ 2.50GHz',
+                    memory: '32 GB',
+                    disk: '512 GB SSD',
+                    macAddress: '00:1A:2B:3C:4D:5E',
+                    installedDate: '2024-01-15',
+                    lastReboot: '2024-11-10 08:30:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 12,
+                    criticalVulnerabilities: 3,
+                    installedSoftware: 87,
+                    runningProcesses: 156
+                }
+            },
+            {
+                id: 'DEV-002',
+                name: 'MAC-DESIGN-05',
+                riskScore: 42,
+                status: 'online',
+                os: 'macOS Sonoma 14.1',
+                ip: '192.168.1.205',
+                lastSeen: '2024-11-13 10:42:15',
+                user: 'sarah.chen@company.com',
+                agentVersion: '7.9.1234',
+                details: {
+                    hostname: 'MAC-DESIGN-05.local',
+                    domain: 'company.local',
+                    manufacturer: 'Apple Inc.',
+                    model: 'MacBook Pro 16-inch 2023',
+                    serialNumber: 'C02YX1234567',
+                    cpu: 'Apple M2 Pro',
+                    memory: '32 GB',
+                    disk: '1 TB SSD',
+                    macAddress: '00:1B:63:84:45:E6',
+                    installedDate: '2024-03-20',
+                    lastReboot: '2024-11-12 09:15:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 5,
+                    criticalVulnerabilities: 0,
+                    installedSoftware: 124,
+                    runningProcesses: 203
+                }
+            },
+            {
+                id: 'DEV-003',
+                name: 'LINUX-SRV-DB01',
+                riskScore: 68,
+                status: 'online',
+                os: 'Ubuntu Server 22.04 LTS',
+                ip: '10.0.1.50',
+                lastSeen: '2024-11-13 10:44:50',
+                user: 'root',
+                agentVersion: '7.9.1200',
+                details: {
+                    hostname: 'db01.company.local',
+                    domain: 'company.local',
+                    manufacturer: 'HPE',
+                    model: 'ProLiant DL380 Gen10',
+                    serialNumber: 'HPE-DL380-98765',
+                    cpu: 'Intel Xeon Gold 6248R @ 3.00GHz (2x)',
+                    memory: '128 GB',
+                    disk: '4 TB RAID 10',
+                    macAddress: '00:1C:2E:3F:4A:5B',
+                    installedDate: '2023-06-10',
+                    lastReboot: '2024-10-15 02:00:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 18,
+                    criticalVulnerabilities: 2,
+                    installedSoftware: 45,
+                    runningProcesses: 89
+                }
+            },
+            {
+                id: 'DEV-004',
+                name: 'WIN-LAPTOP-234',
+                riskScore: 91,
+                status: 'offline',
+                os: 'Windows 10 Pro 22H2',
+                ip: '192.168.1.234',
+                lastSeen: '2024-11-11 16:30:00',
+                user: 'mike.torres@company.com',
+                agentVersion: '7.8.1100',
+                details: {
+                    hostname: 'WIN-LAPTOP-234',
+                    domain: 'company.local',
+                    manufacturer: 'Lenovo',
+                    model: 'ThinkPad X1 Carbon Gen 9',
+                    serialNumber: 'LEN-X1C9-54321',
+                    cpu: 'Intel Core i7-1185G7 @ 3.00GHz',
+                    memory: '16 GB',
+                    disk: '512 GB SSD',
+                    macAddress: '00:1D:3F:4E:5C:6D',
+                    installedDate: '2023-09-05',
+                    lastReboot: '2024-11-11 08:00:00',
+                    agentStatus: 'Offline',
+                    protectionStatus: 'At Risk',
+                    vulnerabilities: 25,
+                    criticalVulnerabilities: 7,
+                    installedSoftware: 92,
+                    runningProcesses: 0
+                }
+            },
+            {
+                id: 'DEV-005',
+                name: 'WIN-WS-FINANCE-12',
+                riskScore: 55,
+                status: 'online',
+                os: 'Windows 11 Enterprise 23H2',
+                ip: '192.168.2.112',
+                lastSeen: '2024-11-13 10:43:00',
+                user: 'lisa.anderson@company.com',
+                agentVersion: '7.9.1234',
+                details: {
+                    hostname: 'WIN-WS-FINANCE-12.company.local',
+                    domain: 'company.local',
+                    manufacturer: 'HP',
+                    model: 'EliteDesk 800 G8',
+                    serialNumber: 'HP-ED800-67890',
+                    cpu: 'Intel Core i5-11500 @ 2.70GHz',
+                    memory: '16 GB',
+                    disk: '256 GB SSD',
+                    macAddress: '00:1E:4D:5F:6A:7B',
+                    installedDate: '2024-02-28',
+                    lastReboot: '2024-11-13 07:00:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 8,
+                    criticalVulnerabilities: 1,
+                    installedSoftware: 65,
+                    runningProcesses: 142
+                }
+            },
+            {
+                id: 'DEV-006',
+                name: 'LINUX-WEB-01',
+                riskScore: 73,
+                status: 'online',
+                os: 'Red Hat Enterprise Linux 9.0',
+                ip: '10.0.2.10',
+                lastSeen: '2024-11-13 10:45:10',
+                user: 'webadmin',
+                agentVersion: '7.9.1200',
+                details: {
+                    hostname: 'web01.company.local',
+                    domain: 'company.local',
+                    manufacturer: 'Dell Inc.',
+                    model: 'PowerEdge R640',
+                    serialNumber: 'DELL-R640-11223',
+                    cpu: 'Intel Xeon Silver 4214R @ 2.40GHz (2x)',
+                    memory: '64 GB',
+                    disk: '2 TB RAID 1',
+                    macAddress: '00:1F:5E:6D:7C:8A',
+                    installedDate: '2023-04-15',
+                    lastReboot: '2024-11-01 03:00:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 15,
+                    criticalVulnerabilities: 3,
+                    installedSoftware: 52,
+                    runningProcesses: 78
+                }
+            },
+            {
+                id: 'DEV-007',
+                name: 'WIN-DEV-STATION-07',
+                riskScore: 38,
+                status: 'online',
+                os: 'Windows 11 Pro 23H2',
+                ip: '192.168.3.107',
+                lastSeen: '2024-11-13 10:44:30',
+                user: 'alex.kim@company.com',
+                agentVersion: '7.9.1234',
+                details: {
+                    hostname: 'WIN-DEV-STATION-07.company.local',
+                    domain: 'company.local',
+                    manufacturer: 'ASUS',
+                    model: 'ProArt Station D940MX',
+                    serialNumber: 'ASUS-D940-33445',
+                    cpu: 'Intel Core i9-12900K @ 3.20GHz',
+                    memory: '64 GB',
+                    disk: '2 TB NVMe SSD',
+                    macAddress: '00:20:6F:7E:8D:9C',
+                    installedDate: '2024-05-10',
+                    lastReboot: '2024-11-12 18:00:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 4,
+                    criticalVulnerabilities: 0,
+                    installedSoftware: 156,
+                    runningProcesses: 234
+                }
+            },
+            {
+                id: 'DEV-008',
+                name: 'MAC-EXEC-CEO',
+                riskScore: 29,
+                status: 'online',
+                os: 'macOS Sonoma 14.2',
+                ip: '192.168.1.10',
+                lastSeen: '2024-11-13 10:45:00',
+                user: 'ceo@company.com',
+                agentVersion: '7.9.1234',
+                details: {
+                    hostname: 'MAC-EXEC-CEO.local',
+                    domain: 'company.local',
+                    manufacturer: 'Apple Inc.',
+                    model: 'MacBook Pro 14-inch 2023',
+                    serialNumber: 'C02ZX9876543',
+                    cpu: 'Apple M3 Max',
+                    memory: '64 GB',
+                    disk: '2 TB SSD',
+                    macAddress: '00:21:7D:8F:9E:0A',
+                    installedDate: '2024-06-01',
+                    lastReboot: '2024-11-13 08:00:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 2,
+                    criticalVulnerabilities: 0,
+                    installedSoftware: 98,
+                    runningProcesses: 187
+                }
+            },
+            {
+                id: 'DEV-009',
+                name: 'WIN-SALES-45',
+                riskScore: 62,
+                status: 'online',
+                os: 'Windows 10 Enterprise 22H2',
+                ip: '192.168.4.145',
+                lastSeen: '2024-11-13 10:41:20',
+                user: 'jennifer.lee@company.com',
+                agentVersion: '7.9.1150',
+                details: {
+                    hostname: 'WIN-SALES-45.company.local',
+                    domain: 'company.local',
+                    manufacturer: 'Dell Inc.',
+                    model: 'Latitude 5420',
+                    serialNumber: 'DELL-LAT-55667',
+                    cpu: 'Intel Core i5-1145G7 @ 2.60GHz',
+                    memory: '16 GB',
+                    disk: '512 GB SSD',
+                    macAddress: '00:22:8E:9A:0B:1C',
+                    installedDate: '2023-11-20',
+                    lastReboot: '2024-11-11 09:00:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 11,
+                    criticalVulnerabilities: 2,
+                    installedSoftware: 73,
+                    runningProcesses: 165
+                }
+            },
+            {
+                id: 'DEV-010',
+                name: 'LINUX-APP-02',
+                riskScore: 47,
+                status: 'online',
+                os: 'Debian 12 (Bookworm)',
+                ip: '10.0.3.20',
+                lastSeen: '2024-11-13 10:44:45',
+                user: 'appuser',
+                agentVersion: '7.9.1200',
+                details: {
+                    hostname: 'app02.company.local',
+                    domain: 'company.local',
+                    manufacturer: 'Supermicro',
+                    model: 'SuperServer 1029P-WTR',
+                    serialNumber: 'SM-1029-77889',
+                    cpu: 'Intel Xeon Silver 4210R @ 2.40GHz (2x)',
+                    memory: '96 GB',
+                    disk: '3 TB RAID 5',
+                    macAddress: '00:23:9F:0B:1C:2D',
+                    installedDate: '2023-08-22',
+                    lastReboot: '2024-10-20 04:00:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 9,
+                    criticalVulnerabilities: 1,
+                    installedSoftware: 67,
+                    runningProcesses: 112
+                }
+            },
+            {
+                id: 'DEV-011',
+                name: 'WIN-HR-WORKSTATION',
+                riskScore: 51,
+                status: 'online',
+                os: 'Windows 11 Pro 23H2',
+                ip: '192.168.5.201',
+                lastSeen: '2024-11-13 10:43:45',
+                user: 'hr.admin@company.com',
+                agentVersion: '7.9.1234',
+                details: {
+                    hostname: 'WIN-HR-WORKSTATION.company.local',
+                    domain: 'company.local',
+                    manufacturer: 'HP',
+                    model: 'Z2 Tower G9',
+                    serialNumber: 'HP-Z2-99001',
+                    cpu: 'Intel Core i7-12700 @ 2.10GHz',
+                    memory: '32 GB',
+                    disk: '1 TB SSD',
+                    macAddress: '00:24:0A:1C:2D:3E',
+                    installedDate: '2024-04-12',
+                    lastReboot: '2024-11-12 07:30:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 7,
+                    criticalVulnerabilities: 1,
+                    installedSoftware: 81,
+                    runningProcesses: 148
+                }
+            },
+            {
+                id: 'DEV-012',
+                name: 'WIN-MARKETING-08',
+                riskScore: 44,
+                status: 'online',
+                os: 'Windows 11 Pro 23H2',
+                ip: '192.168.6.108',
+                lastSeen: '2024-11-13 10:42:30',
+                user: 'marketing@company.com',
+                agentVersion: '7.9.1234',
+                details: {
+                    hostname: 'WIN-MARKETING-08.company.local',
+                    domain: 'company.local',
+                    manufacturer: 'Lenovo',
+                    model: 'ThinkCentre M90a Gen 3',
+                    serialNumber: 'LEN-M90-11223',
+                    cpu: 'Intel Core i7-12700T @ 1.40GHz',
+                    memory: '16 GB',
+                    disk: '512 GB SSD',
+                    macAddress: '00:25:1B:2D:3E:4F',
+                    installedDate: '2024-07-18',
+                    lastReboot: '2024-11-13 06:00:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 6,
+                    criticalVulnerabilities: 0,
+                    installedSoftware: 94,
+                    runningProcesses: 171
+                }
+            },
+            {
+                id: 'DEV-013',
+                name: 'LINUX-DOCKER-HOST',
+                riskScore: 79,
+                status: 'online',
+                os: 'Ubuntu Server 22.04 LTS',
+                ip: '10.0.4.30',
+                lastSeen: '2024-11-13 10:45:20',
+                user: 'docker',
+                agentVersion: '7.9.1200',
+                details: {
+                    hostname: 'docker-host.company.local',
+                    domain: 'company.local',
+                    manufacturer: 'Dell Inc.',
+                    model: 'PowerEdge R750',
+                    serialNumber: 'DELL-R750-33445',
+                    cpu: 'Intel Xeon Gold 6338 @ 2.00GHz (2x)',
+                    memory: '256 GB',
+                    disk: '8 TB RAID 10',
+                    macAddress: '00:26:2C:3E:4F:5A',
+                    installedDate: '2024-01-08',
+                    lastReboot: '2024-09-15 02:00:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 21,
+                    criticalVulnerabilities: 4,
+                    installedSoftware: 89,
+                    runningProcesses: 312
+                }
+            },
+            {
+                id: 'DEV-014',
+                name: 'WIN-SUPPORT-22',
+                riskScore: 58,
+                status: 'online',
+                os: 'Windows 10 Pro 22H2',
+                ip: '192.168.7.122',
+                lastSeen: '2024-11-13 10:40:15',
+                user: 'support.team@company.com',
+                agentVersion: '7.9.1100',
+                details: {
+                    hostname: 'WIN-SUPPORT-22.company.local',
+                    domain: 'company.local',
+                    manufacturer: 'Acer',
+                    model: 'Veriton M6690G',
+                    serialNumber: 'ACER-VM-55667',
+                    cpu: 'Intel Core i5-11400 @ 2.60GHz',
+                    memory: '16 GB',
+                    disk: '512 GB SSD',
+                    macAddress: '00:27:3D:4F:5A:6B',
+                    installedDate: '2023-12-05',
+                    lastReboot: '2024-11-10 08:00:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 10,
+                    criticalVulnerabilities: 2,
+                    installedSoftware: 88,
+                    runningProcesses: 159
+                }
+            },
+            {
+                id: 'DEV-015',
+                name: 'MAC-CREATIVE-03',
+                riskScore: 35,
+                status: 'online',
+                os: 'macOS Ventura 13.6',
+                ip: '192.168.8.103',
+                lastSeen: '2024-11-13 10:44:00',
+                user: 'creative@company.com',
+                agentVersion: '7.9.1234',
+                details: {
+                    hostname: 'MAC-CREATIVE-03.local',
+                    domain: 'company.local',
+                    manufacturer: 'Apple Inc.',
+                    model: 'iMac 24-inch 2023',
+                    serialNumber: 'C02AA1234567',
+                    cpu: 'Apple M3',
+                    memory: '24 GB',
+                    disk: '1 TB SSD',
+                    macAddress: '00:28:4E:5A:6B:7C',
+                    installedDate: '2024-08-25',
+                    lastReboot: '2024-11-12 10:00:00',
+                    agentStatus: 'Active',
+                    protectionStatus: 'Protected',
+                    vulnerabilities: 3,
+                    criticalVulnerabilities: 0,
+                    installedSoftware: 112,
+                    runningProcesses: 198
+                }
+            }
+        ];
+        
+        // Function to get risk class
+        function getRiskClass(score) {
+            if (score >= 80) return 'risk-critical';
+            if (score >= 60) return 'risk-high';
+            if (score >= 40) return 'risk-medium';
+            return 'risk-low';
+        }
+        
+        // Function to render device table
+        function renderDeviceTable() {
+            const tbody = document.getElementById('deviceTableBody');
+            tbody.innerHTML = '';
+            
+            mockDevices.forEach(device => {
+                const row = document.createElement('tr');
+                row.dataset.deviceId = device.id;
+                
+                row.innerHTML = `
+                    <td><input type="checkbox" class="device-checkbox"></td>
+                    <td class="device-name">${device.name}</td>
+                    <td class="risk-score ${getRiskClass(device.riskScore)}">${device.riskScore}</td>
+                    <td class="status-${device.status}">${device.status === 'online' ? '🟢 Online' : '🔴 Offline'}</td>
+                    <td>${device.os}</td>
+                    <td>${device.ip}</td>
+                    <td>${device.lastSeen}</td>
+                    <td>${device.user}</td>
+                    <td>${device.agentVersion}</td>
+                `;
+                
+                // Add click handler to show device details
+                row.addEventListener('click', (e) => {
+                    // Don't trigger if clicking checkbox
+                    if (e.target.type === 'checkbox') return;
+                    
+                    // Remove selected class from all rows
+                    document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('selected'));
+                    
+                    // Add selected class to clicked row
+                    row.classList.add('selected');
+                    
+                    // Show device detail panel
+                    showDeviceDetail(device);
+                });
+                
+                tbody.appendChild(row);
+            });
+            
+            // Update device count
+            document.getElementById('deviceCount').textContent = mockDevices.length;
+        }
+        
+        // Function to show device detail panel
+        function showDeviceDetail(device) {
+            const panel = document.getElementById('deviceDetailPanel');
+            const title = document.getElementById('deviceDetailTitle');
+            const content = document.getElementById('deviceDetailContent');
+            
+            title.textContent = device.name;
+            
+            content.innerHTML = `
+                <div class="detail-section">
+                    <h3 class="detail-section-title">Overview</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Risk Score</div>
+                            <div class="detail-value ${getRiskClass(device.riskScore)}">${device.riskScore}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Status</div>
+                            <div class="detail-value status-${device.status}">${device.status === 'online' ? '🟢 Online' : '🔴 Offline'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Protection Status</div>
+                            <div class="detail-value">${device.details.protectionStatus}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Agent Status</div>
+                            <div class="detail-value">${device.details.agentStatus}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3 class="detail-section-title">System Information</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Hostname</div>
+                            <div class="detail-value highlight">${device.details.hostname}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Domain</div>
+                            <div class="detail-value">${device.details.domain}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Operating System</div>
+                            <div class="detail-value">${device.os}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">IP Address</div>
+                            <div class="detail-value">${device.ip}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">MAC Address</div>
+                            <div class="detail-value">${device.details.macAddress}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">User</div>
+                            <div class="detail-value">${device.user}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3 class="detail-section-title">Hardware</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Manufacturer</div>
+                            <div class="detail-value">${device.details.manufacturer}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Model</div>
+                            <div class="detail-value">${device.details.model}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Serial Number</div>
+                            <div class="detail-value">${device.details.serialNumber}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">CPU</div>
+                            <div class="detail-value">${device.details.cpu}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Memory</div>
+                            <div class="detail-value">${device.details.memory}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Disk</div>
+                            <div class="detail-value">${device.details.disk}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3 class="detail-section-title">Security</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Agent Version</div>
+                            <div class="detail-value">${device.agentVersion}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Vulnerabilities</div>
+                            <div class="detail-value">${device.details.vulnerabilities} total (${device.details.criticalVulnerabilities} critical)</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Installed Software</div>
+                            <div class="detail-value">${device.details.installedSoftware} packages</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Running Processes</div>
+                            <div class="detail-value">${device.details.runningProcesses}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3 class="detail-section-title">Timeline</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Installed Date</div>
+                            <div class="detail-value">${device.details.installedDate}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Last Seen</div>
+                            <div class="detail-value">${device.lastSeen}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Last Reboot</div>
+                            <div class="detail-value">${device.details.lastReboot}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            panel.classList.add('open');
+        }
+        
+        // Initialize context engine
+        const contextEngine = new ContextEngine();
+        contextEngine.setCurrentPage('endpoint-inventory');
+        
+        // Initialize content generator
+        const contentGenerator = new ContentGenerator();
+        
+        // Initialize help panel
+        const helpPanel = new HelpPanel(contextEngine, contentGenerator);
+        
+        // Initialize tooltip manager
+        const tooltipManager = new TooltipManager(contextEngine);
+        
+        // Initialize user selector
+        const userSelector = new UserSelector(contextEngine);
+        
+        // Initialize navigation
+        const navigation = new Navigation(contextEngine);
+        navigation.init();
+        
+        // Render device table
+        renderDeviceTable();
+        
+        // Connect help button to help panel
+        document.getElementById('helpButton').addEventListener('click', () => {
+            helpPanel.open();
+        });
+        
+        // Connect close button
+        document.getElementById('closeHelp').addEventListener('click', () => {
+            helpPanel.close();
+        });
+        
+        // Connect device detail panel close button
+        document.getElementById('closeDeviceDetail').addEventListener('click', () => {
+            document.getElementById('deviceDetailPanel').classList.remove('open');
+            document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('selected'));
+        });
+        
+        // Connect ESC key to close panels
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (helpPanel.isOpen) {
+                    helpPanel.close();
+                } else if (document.getElementById('deviceDetailPanel').classList.contains('open')) {
+                    document.getElementById('deviceDetailPanel').classList.remove('open');
+                    document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('selected'));
+                }
+            }
+        });
+        
+        // Connect help icons to tooltips
+        document.querySelectorAll('.help-icon').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const tooltipKey = icon.dataset.tooltip;
+                const contextKey = `${contextEngine.context.userType}:endpoint-inventory:${tooltipKey}`;
+                tooltipManager.show(icon, contextKey);
+            });
+        });
+        
+        // Select all checkbox
+        document.getElementById('selectAll').addEventListener('change', (e) => {
+            document.querySelectorAll('.device-checkbox').forEach(cb => {
+                cb.checked = e.target.checked;
+            });
+        });
+        
+        console.log('Endpoint Inventory page initialized');
+        console.log('Current context:', contextEngine.getContext());
+    </script>
+</body>
+</html>

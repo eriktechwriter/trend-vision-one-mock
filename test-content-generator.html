@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Generator Test - Trend Vision One</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #d71921;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            border-left: 4px solid #d71921;
+        }
+        
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        select, button {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        button {
+            background: #d71921;
+            color: white;
+            border: none;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        button:hover {
+            background: #b01419;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .output {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            min-height: 200px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .output pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        
+        .error {
+            color: #d71921;
+            font-weight: 500;
+        }
+        
+        .success {
+            color: #28a745;
+            font-weight: 500;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .context-key {
+            background: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 13px;
+            display: inline-block;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Content Generator Test</h1>
+        <p class="subtitle">Test the ContentGenerator class with different context keys</p>
+        
+        <!-- Test 1: Basic Content Loading -->
+        <div class="test-section">
+            <h2>Test 1: Load Content by Context Key</h2>
+            <div class="controls">
+                <select id="userTypeSelect">
+                    <option value="admin">Admin</option>
+                    <option value="analyst">Analyst</option>
+                    <option value="ciso">CISO</option>
+                    <option value="viewer">Viewer</option>
+                </select>
+                
+                <select id="pageSelect">
+                    <option value="attack-surface">Attack Surface</option>
+                    <option value="workbench">Workbench</option>
+                    <option value="endpoint-inventory">Endpoint Inventory</option>
+                </select>
+                
+                <button id="loadContentBtn">Load Content</button>
+                <button id="clearCacheBtn">Clear Cache</button>
+            </div>
+            
+            <div>
+                <strong>Context Key:</strong> <span class="context-key" id="contextKeyDisplay">admin:attack-surface</span>
+            </div>
+            
+            <div class="output" id="contentOutput">
+                <p class="loading">Click "Load Content" to test...</p>
+            </div>
+        </div>
+        
+        <!-- Test 2: Cache Performance -->
+        <div class="test-section">
+            <h2>Test 2: Cache Performance</h2>
+            <div class="controls">
+                <button id="testCacheBtn">Test Cache (Load Same Content 3x)</button>
+            </div>
+            <div class="output" id="cacheOutput">
+                <p class="loading">Click "Test Cache" to measure performance...</p>
+            </div>
+        </div>
+        
+        <!-- Test 3: Fallback Content -->
+        <div class="test-section">
+            <h2>Test 3: Fallback Content</h2>
+            <div class="controls">
+                <button id="testFallbackBtn">Test Fallback (Invalid Context)</button>
+            </div>
+            <div class="output" id="fallbackOutput">
+                <p class="loading">Click "Test Fallback" to test missing content handling...</p>
+            </div>
+        </div>
+        
+        <!-- Test 4: Cache Statistics -->
+        <div class="test-section">
+            <h2>Test 4: Cache Statistics</h2>
+            <div class="controls">
+                <button id="refreshStatsBtn">Refresh Stats</button>
+            </div>
+            <div class="stats" id="statsDisplay">
+                <div class="stat-card">
+                    <div class="stat-label">Cache Size</div>
+                    <div class="stat-value" id="cacheSize">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Content Source</div>
+                    <div class="stat-value" id="contentSource">static</div>
+                </div>
+            </div>
+            <div class="output" id="statsOutput" style="margin-top: 15px;">
+                <p class="loading">Click "Refresh Stats" to view cache details...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Load JavaScript modules -->
+    <script src="assets/js/context-engine.js"></script>
+    <script src="assets/js/content-generator.js"></script>
+    
+    <script>
+        // Initialize modules
+        const contextEngine = new ContextEngine();
+        const contentGenerator = new ContentGenerator();
+        
+        // Update context key display
+        function updateContextKeyDisplay() {
+            const userType = document.getElementById('userTypeSelect').value;
+            const page = document.getElementById('pageSelect').value;
+            const contextKey = `${userType}:${page}`;
+            document.getElementById('contextKeyDisplay').textContent = contextKey;
+        }
+        
+        // Test 1: Load Content
+        document.getElementById('loadContentBtn').addEventListener('click', async () => {
+            const output = document.getElementById('contentOutput');
+            const btn = document.getElementById('loadContentBtn');
+            
+            btn.disabled = true;
+            output.innerHTML = '<p class="loading">Loading content...</p>';
+            
+            try {
+                const userType = document.getElementById('userTypeSelect').value;
+                const page = document.getElementById('pageSelect').value;
+                const contextKey = `${userType}:${page}`;
+                
+                const startTime = performance.now();
+                const content = await contentGenerator.generateContent(contextKey);
+                const endTime = performance.now();
+                const loadTime = (endTime - startTime).toFixed(2);
+                
+                output.innerHTML = `
+                    <p class="success">✓ Content loaded successfully in ${loadTime}ms</p>
+                    <pre>${JSON.stringify(content, null, 2)}</pre>
+                `;
+            } catch (error) {
+                output.innerHTML = `
+                    <p class="error">✗ Error loading content</p>
+                    <pre>${error.message}\n${error.stack}</pre>
+                `;
+            } finally {
+                btn.disabled = false;
+            }
+        });
+        
+        // Clear Cache
+        document.getElementById('clearCacheBtn').addEventListener('click', () => {
+            contentGenerator.clearCache();
+            document.getElementById('contentOutput').innerHTML = '<p class="success">✓ Cache cleared</p>';
+            updateStats();
+        });
+        
+        // Test 2: Cache Performance
+        document.getElementById('testCacheBtn').addEventListener('click', async () => {
+            const output = document.getElementById('cacheOutput');
+            const btn = document.getElementById('testCacheBtn');
+            
+            btn.disabled = true;
+            output.innerHTML = '<p class="loading">Testing cache performance...</p>';
+            
+            try {
+                const contextKey = 'admin:attack-surface';
+                const results = [];
+                
+                // First load (no cache)
+                contentGenerator.clearCache();
+                let startTime = performance.now();
+                await contentGenerator.generateContent(contextKey);
+                let endTime = performance.now();
+                results.push({ attempt: 1, time: (endTime - startTime).toFixed(2), cached: false });
+                
+                // Second load (from cache)
+                startTime = performance.now();
+                await contentGenerator.generateContent(contextKey);
+                endTime = performance.now();
+                results.push({ attempt: 2, time: (endTime - startTime).toFixed(2), cached: true });
+                
+                // Third load (from cache)
+                startTime = performance.now();
+                await contentGenerator.generateContent(contextKey);
+                endTime = performance.now();
+                results.push({ attempt: 3, time: (endTime - startTime).toFixed(2), cached: true });
+                
+                const speedup = (results[0].time / results[1].time).toFixed(1);
+                
+                output.innerHTML = `
+                    <p class="success">✓ Cache performance test complete</p>
+                    <pre>${JSON.stringify(results, null, 2)}</pre>
+                    <p><strong>Cache speedup: ${speedup}x faster</strong></p>
+                `;
+            } catch (error) {
+                output.innerHTML = `
+                    <p class="error">✗ Error testing cache</p>
+                    <pre>${error.message}</pre>
+                `;
+            } finally {
+                btn.disabled = false;
+                updateStats();
+            }
+        });
+        
+        // Test 3: Fallback Content
+        document.getElementById('testFallbackBtn').addEventListener('click', async () => {
+            const output = document.getElementById('fallbackOutput');
+            const btn = document.getElementById('testFallbackBtn');
+            
+            btn.disabled = true;
+            output.innerHTML = '<p class="loading">Testing fallback content...</p>';
+            
+            try {
+                const invalidKey = 'invalid:nonexistent:page';
+                
+                const startTime = performance.now();
+                const content = await contentGenerator.generateContent(invalidKey);
+                const endTime = performance.now();
+                const loadTime = (endTime - startTime).toFixed(2);
+                
+                const isFallback = content.metadata && content.metadata.isFallback;
+                
+                output.innerHTML = `
+                    <p class="success">✓ Fallback content generated in ${loadTime}ms</p>
+                    <p><strong>Is Fallback:</strong> ${isFallback ? 'Yes' : 'No'}</p>
+                    <pre>${JSON.stringify(content, null, 2)}</pre>
+                `;
+            } catch (error) {
+                output.innerHTML = `
+                    <p class="error">✗ Error testing fallback</p>
+                    <pre>${error.message}</pre>
+                `;
+            } finally {
+                btn.disabled = false;
+            }
+        });
+        
+        // Test 4: Cache Statistics
+        function updateStats() {
+            const stats = contentGenerator.getCacheStats();
+            
+            document.getElementById('cacheSize').textContent = stats.size;
+            document.getElementById('contentSource').textContent = contentGenerator.getContentSource();
+            
+            document.getElementById('statsOutput').innerHTML = `
+                <pre>${JSON.stringify(stats, null, 2)}</pre>
+            `;
+        }
+        
+        document.getElementById('refreshStatsBtn').addEventListener('click', updateStats);
+        
+        // Update context key display when selects change
+        document.getElementById('userTypeSelect').addEventListener('change', updateContextKeyDisplay);
+        document.getElementById('pageSelect').addEventListener('change', updateContextKeyDisplay);
+        
+        // Initial stats
+        updateStats();
+        
+        console.log('Content Generator Test Page Loaded');
+        console.log('ContentGenerator instance:', contentGenerator);
+        console.log('ContextEngine instance:', contextEngine);
+    </script>
+</body>
+</html>

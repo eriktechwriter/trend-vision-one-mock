@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessibility Checker - Agentic Docs POC</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #0f1419;
+            color: #ffffff;
+        }
+        h1 {
+            color: #d71921;
+        }
+        .test-section {
+            background: #1a1f26;
+            border: 1px solid #2d3440;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .pass {
+            background: #10b98144;
+            border-left: 4px solid #10b981;
+        }
+        .fail {
+            background: #ef444444;
+            border-left: 4px solid #ef4444;
+        }
+        .warn {
+            background: #f59e0b44;
+            border-left: 4px solid #f59e0b;
+        }
+        button {
+            background: #d71921;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #b01419;
+        }
+        #results {
+            margin-top: 20px;
+        }
+        .summary {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        code {
+            background: #252b33;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>♿ Accessibility Checker</h1>
+    <p>This tool checks the current page for common accessibility issues.</p>
+    
+    <div class="test-section">
+        <h2>Run Accessibility Tests</h2>
+        <button onclick="runAccessibilityTests()">Run Tests</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        let results = [];
+        
+        function addResult(category, test, status, message) {
+            results.push({ category, test, status, message });
+            displayResults();
+        }
+        
+        function displayResults() {
+            const resultsDiv = document.getElementById('results');
+            const categories = {};
+            
+            // Group by category
+            results.forEach(r => {
+                if (!categories[r.category]) {
+                    categories[r.category] = [];
+                }
+                categories[r.category].push(r);
+            });
+            
+            // Count totals
+            const total = results.length;
+            const passed = results.filter(r => r.status === 'pass').length;
+            const failed = results.filter(r => r.status === 'fail').length;
+            const warnings = results.filter(r => r.status === 'warn').length;
+            
+            let html = `
+                <div class="summary">
+                    ${passed}/${total} checks passed
+                    ${failed > 0 ? `(${failed} failed, ${warnings} warnings)` : ''}
+                </div>
+            `;
+            
+            // Display by category
+            for (const [category, tests] of Object.entries(categories)) {
+                html += `<div class="test-section"><h3>${category}</h3>`;
+                tests.forEach(t => {
+                    html += `
+                        <div class="test-result ${t.status}">
+                            <strong>${t.test}:</strong> ${t.message}
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        function clearResults() {
+            results = [];
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        function checkColorContrast(fg, bg) {
+            // Simple contrast ratio calculation
+            // This is a simplified version - full WCAG calculation is more complex
+            function getLuminance(color) {
+                // Parse RGB values
+                const rgb = color.match(/\d+/g);
+                if (!rgb || rgb.length < 3) return 0;
+                
+                const [r, g, b] = rgb.map(v => {
+                    v = parseInt(v) / 255;
+                    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+                });
+                
+                return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            }
+            
+            const l1 = getLuminance(fg);
+            const l2 = getLuminance(bg);
+            const ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+            
+            return ratio;
+        }
+        
+        function runAccessibilityTests() {
+            clearResults();
+            
+            // Test 1: Check for lang attribute
+            const htmlLang = document.documentElement.getAttribute('lang');
+            if (htmlLang) {
+                addResult('HTML Structure', 'lang attribute', 'pass', `Language set to "${htmlLang}"`);
+            } else {
+                addResult('HTML Structure', 'lang attribute', 'fail', 'Missing lang attribute on <html>');
+            }
+            
+            // Test 2: Check for page title
+            const title = document.querySelector('title');
+            if (title && title.textContent.trim()) {
+                addResult('HTML Structure', 'page title', 'pass', `Title: "${title.textContent}"`);
+            } else {
+                addResult('HTML Structure', 'page title', 'fail', 'Missing or empty page title');
+            }
+            
+            // Test 3: Check for viewport meta tag
+            const viewport = document.querySelector('meta[name="viewport"]');
+            if (viewport) {
+                addResult('Responsive Design', 'viewport', 'pass', 'Viewport meta tag present');
+            } else {
+                addResult('Responsive Design', 'viewport', 'warn', 'Missing viewport meta tag');
+            }
+            
+            // Test 4: Check images for alt text
+            const images = document.querySelectorAll('img');
+            let imagesWithoutAlt = 0;
+            images.forEach((img, i) => {
+                if (!img.hasAttribute('alt')) {
+                    imagesWithoutAlt++;
+                }
+            });
+            if (images.length === 0) {
+                addResult('Images', 'alt text', 'pass', 'No images on page');
+            } else if (imagesWithoutAlt === 0) {
+                addResult('Images', 'alt text', 'pass', `All ${images.length} images have alt text`);
+            } else {
+                addResult('Images', 'alt text', 'fail', `${imagesWithoutAlt} of ${images.length} images missing alt text`);
+            }
+            
+            // Test 5: Check for heading hierarchy
+            const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            const h1Count = document.querySelectorAll('h1').length;
+            if (h1Count === 0) {
+                addResult('Headings', 'h1 present', 'warn', 'No h1 heading found');
+            } else if (h1Count === 1) {
+                addResult('Headings', 'h1 present', 'pass', 'One h1 heading found');
+            } else {
+                addResult('Headings', 'h1 present', 'warn', `Multiple h1 headings found (${h1Count})`);
+            }
+            
+            // Test 6: Check for skip links
+            const skipLink = document.querySelector('a[href^="#"]');
+            if (skipLink && skipLink.textContent.toLowerCase().includes('skip')) {
+                addResult('Navigation', 'skip link', 'pass', 'Skip link found');
+            } else {
+                addResult('Navigation', 'skip link', 'warn', 'No skip link found (recommended for keyboard users)');
+            }
+            
+            // Test 7: Check buttons for accessible names
+            const buttons = document.querySelectorAll('button');
+            let buttonsWithoutText = 0;
+            buttons.forEach(btn => {
+                const hasText = btn.textContent.trim().length > 0;
+                const hasAriaLabel = btn.hasAttribute('aria-label');
+                const hasAriaLabelledBy = btn.hasAttribute('aria-labelledby');
+                
+                if (!hasText && !hasAriaLabel && !hasAriaLabelledBy) {
+                    buttonsWithoutText++;
+                }
+            });
+            if (buttons.length === 0) {
+                addResult('Interactive Elements', 'button labels', 'pass', 'No buttons on page');
+            } else if (buttonsWithoutText === 0) {
+                addResult('Interactive Elements', 'button labels', 'pass', `All ${buttons.length} buttons have accessible names`);
+            } else {
+                addResult('Interactive Elements', 'button labels', 'fail', `${buttonsWithoutText} of ${buttons.length} buttons lack accessible names`);
+            }
+            
+            // Test 8: Check links for accessible names
+            const links = document.querySelectorAll('a');
+            let linksWithoutText = 0;
+            links.forEach(link => {
+                const hasText = link.textContent.trim().length > 0;
+                const hasAriaLabel = link.hasAttribute('aria-label');
+                const hasAriaLabelledBy = link.hasAttribute('aria-labelledby');
+                
+                if (!hasText && !hasAriaLabel && !hasAriaLabelledBy) {
+                    linksWithoutText++;
+                }
+            });
+            if (links.length === 0) {
+                addResult('Interactive Elements', 'link labels', 'pass', 'No links on page');
+            } else if (linksWithoutText === 0) {
+                addResult('Interactive Elements', 'link labels', 'pass', `All ${links.length} links have accessible names`);
+            } else {
+                addResult('Interactive Elements', 'link labels', 'fail', `${linksWithoutText} of ${links.length} links lack accessible names`);
+            }
+            
+            // Test 9: Check form inputs for labels
+            const inputs = document.querySelectorAll('input, select, textarea');
+            let inputsWithoutLabels = 0;
+            inputs.forEach(input => {
+                const id = input.getAttribute('id');
+                const hasLabel = id && document.querySelector(`label[for="${id}"]`);
+                const hasAriaLabel = input.hasAttribute('aria-label');
+                const hasAriaLabelledBy = input.hasAttribute('aria-labelledby');
+                
+                if (!hasLabel && !hasAriaLabel && !hasAriaLabelledBy) {
+                    inputsWithoutLabels++;
+                }
+            });
+            if (inputs.length === 0) {
+                addResult('Forms', 'input labels', 'pass', 'No form inputs on page');
+            } else if (inputsWithoutLabels === 0) {
+                addResult('Forms', 'input labels', 'pass', `All ${inputs.length} inputs have labels`);
+            } else {
+                addResult('Forms', 'input labels', 'fail', `${inputsWithoutLabels} of ${inputs.length} inputs lack labels`);
+            }
+            
+            // Test 10: Check for ARIA landmarks
+            const landmarks = document.querySelectorAll('[role="main"], [role="navigation"], [role="banner"], [role="contentinfo"], main, nav, header, footer');
+            if (landmarks.length > 0) {
+                addResult('ARIA', 'landmarks', 'pass', `${landmarks.length} landmark regions found`);
+            } else {
+                addResult('ARIA', 'landmarks', 'warn', 'No ARIA landmarks found (recommended for screen readers)');
+            }
+            
+            // Test 11: Check for keyboard focus indicators
+            const focusableElements = document.querySelectorAll('a, button, input, select, textarea, [tabindex]');
+            if (focusableElements.length > 0) {
+                addResult('Keyboard Navigation', 'focusable elements', 'pass', `${focusableElements.length} focusable elements found`);
+                addResult('Keyboard Navigation', 'focus indicators', 'warn', 'Manually test focus indicators with Tab key');
+            } else {
+                addResult('Keyboard Navigation', 'focusable elements', 'warn', 'No focusable elements found');
+            }
+            
+            // Test 12: Check for tabindex > 0 (anti-pattern)
+            const positiveTabindex = document.querySelectorAll('[tabindex]:not([tabindex="0"]):not([tabindex="-1"])');
+            if (positiveTabindex.length === 0) {
+                addResult('Keyboard Navigation', 'tabindex', 'pass', 'No positive tabindex values (good!)');
+            } else {
+                addResult('Keyboard Navigation', 'tabindex', 'warn', `${positiveTabindex.length} elements with positive tabindex (can disrupt tab order)`);
+            }
+            
+            // Test 13: Check for color contrast (basic check on body)
+            const bodyStyles = window.getComputedStyle(document.body);
+            const textColor = bodyStyles.color;
+            const bgColor = bodyStyles.backgroundColor;
+            addResult('Color Contrast', 'body text', 'warn', `Text: ${textColor}, Background: ${bgColor}. Use a contrast checker tool for accurate WCAG compliance.`);
+            
+            // Test 14: Check for text zoom
+            addResult('Text Sizing', 'zoom test', 'warn', 'Manually test: Zoom to 200% and verify text is readable');
+            
+            // Test 15: Check for screen reader only content
+            const srOnly = document.querySelectorAll('.sr-only, .visually-hidden, .screen-reader-only');
+            if (srOnly.length > 0) {
+                addResult('Screen Readers', 'sr-only content', 'pass', `${srOnly.length} screen reader only elements found`);
+            } else {
+                addResult('Screen Readers', 'sr-only content', 'pass', 'No screen reader only content (not required)');
+            }
+            
+            addResult('Summary', 'Tests complete', 'pass', 'Review results above. Some tests require manual verification.');
+        }
+    </script>
+</body>
+</html>

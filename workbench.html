@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workbench - Trend Vision One™</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/pages.css">
+    
+    <style>
+        /* Page-specific layout */
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        /* Top Header */
+        .top-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: var(--color-bg-secondary);
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-lg);
+            z-index: var(--z-sticky);
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--tm-red) 0%, var(--tm-red-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-lg);
+        }
+        
+        .product-name {
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+        }
+        
+        .page-title {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .header-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .demo-badge {
+            background-color: var(--color-warning);
+            color: var(--color-text-primary);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+        }
+        
+        .search-box {
+            background-color: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--color-text-secondary);
+            width: 200px;
+            font-size: var(--font-size-sm);
+        }
+        
+        .search-box::placeholder {
+            color: var(--color-text-muted);
+        }
+        
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            font-size: var(--font-size-lg);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
+        }
+        
+        .icon-btn:hover {
+            background-color: var(--color-bg-hover);
+            color: var(--color-text-primary);
+        }
+        
+        /* Side Navigation */
+        .side-nav {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 240px;
+            height: calc(100vh - 60px);
+            background-color: var(--color-bg-secondary);
+            border-right: 1px solid var(--color-border);
+            overflow-y: auto;
+            z-index: var(--z-base);
+        }
+        
+        /* Main Content Area */
+        .main-container {
+            margin-top: 60px;
+            margin-left: 240px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        /* Workbench Header */
+        .workbench-header {
+            background-color: var(--color-bg-primary);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--spacing-lg);
+        }
+        
+        .workbench-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .help-icon {
+            font-size: var(--font-size-sm);
+            color: var(--tm-red-light);
+            cursor: help;
+        }
+        
+        .workbench-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        /* Filter Panel */
+        .filter-panel {
+            width: 280px;
+            background-color: var(--color-bg-secondary);
+            border-right: 1px solid var(--color-border);
+            padding: var(--spacing-lg);
+            overflow-y: auto;
+        }
+        
+        .filter-section {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .filter-title {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-md);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) 0;
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .filter-option:hover {
+            color: var(--color-text-primary);
+        }
+        
+        .filter-option input[type="checkbox"] {
+            cursor: pointer;
+        }
+        
+        .filter-count {
+            margin-left: auto;
+            color: var(--color-text-muted);
+            font-size: var(--font-size-xs);
+        }
+        
+        .date-input {
+            width: 100%;
+            background-color: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm);
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        /* Alert List */
+        .alert-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+        }
+        
+        .alert-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .alert-count {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .view-options {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        /* Alert Card */
+        .alert-card {
+            background-color: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-md);
+            overflow: hidden;
+            transition: all var(--transition-fast);
+        }
+        
+        .alert-card:hover {
+            border-color: var(--color-border-light);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .alert-card.expanded {
+            border-color: var(--tm-red);
+        }
+        
+        .alert-header {
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+        }
+        
+        .severity-badge {
+            padding: 4px 12px;
+            border-radius: var(--radius-xl);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        
+        .severity-critical {
+            background-color: rgba(220, 38, 38, 0.2);
+            color: #ef4444;
+        }
+        
+        .severity-high {
+            background-color: rgba(249, 115, 22, 0.2);
+            color: #f97316;
+        }
+        
+        .severity-medium {
+            background-color: rgba(234, 179, 8, 0.2);
+            color: #eab308;
+        }
+        
+        .severity-low {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+        
+        .alert-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .alert-title {
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .alert-meta {
+            display: flex;
+            gap: var(--spacing-lg);
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .alert-meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        .alert-description {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            line-height: var(--line-height-relaxed);
+        }
+        
+        .alert-expand-icon {
+            color: var(--color-text-muted);
+            font-size: var(--font-size-lg);
+            transition: transform var(--transition-fast);
+        }
+        
+        .alert-card.expanded .alert-expand-icon {
+            transform: rotate(180deg);
+        }
+        
+        /* Alert Details (expandable) */
+        .alert-details {
+            display: none;
+            padding: 0 var(--spacing-lg) var(--spacing-lg);
+            border-top: 1px solid var(--color-border);
+        }
+        
+        .alert-card.expanded .alert-details {
+            display: block;
+        }
+        
+        .detail-section {
+            margin-top: var(--spacing-lg);
+        }
+        
+        .detail-title {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-md);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+        }
+        
+        .detail-item {
+            font-size: var(--font-size-sm);
+        }
+        
+        .detail-label {
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .detail-value {
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .detail-value.highlight {
+            color: var(--tm-red-light);
+        }
+        
+        .timeline {
+            margin-top: var(--spacing-md);
+        }
+        
+        .timeline-item {
+            display: flex;
+            gap: var(--spacing-md);
+            padding: var(--spacing-sm) 0;
+            font-size: var(--font-size-sm);
+        }
+        
+        .timeline-time {
+            color: var(--color-text-muted);
+            min-width: 80px;
+        }
+        
+        .timeline-event {
+            color: var(--color-text-secondary);
+        }
+        
+        .alert-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--color-border);
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 2px 8px;
+            border-radius: var(--radius-xl);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .status-new {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+        
+        .status-in-progress {
+            background-color: rgba(234, 179, 8, 0.2);
+            color: #eab308;
+        }
+        
+        .status-resolved {
+            background-color: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="logo-section">
+            <div class="logo-icon">T</div>
+            <span class="product-name">Trend Vision One™</span>
+            <span class="page-title">Workbench</span>
+        </div>
+        <div class="header-actions">
+            <span class="demo-badge">POC DEMO</span>
+            <input type="text" class="search-box" placeholder="Search alerts...">
+            <button class="icon-btn">🕐</button>
+            <button class="icon-btn">📊</button>
+            <button class="icon-btn" id="helpButton">❓</button>
+            <button class="icon-btn">🔔</button>
+            <div id="userSelector"></div>
+        </div>
+    </header>
+    
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <a href="attack-surface.html">Attack Surface Discovery</a>
+        <a href="workbench.html" class="active">Workbench</a>
+        <a href="endpoint-inventory.html">Endpoint Inventory</a>
+    </nav>
+    
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Workbench Header -->
+        <div class="workbench-header">
+            <h1 class="workbench-title">
+                Workbench
+                <span class="help-icon" data-tooltip="workbench-overview">❓</span>
+            </h1>
+            <p class="workbench-subtitle">Investigate and respond to security alerts and incidents</p>
+        </div>
+        
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Filter Panel -->
+            <div class="filter-panel">
+                <div class="filter-section">
+                    <div class="filter-title">Status</div>
+                    <label class="filter-option">
+                        <input type="checkbox" checked>
+                        <span>New</span>
+                        <span class="filter-count">5</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" checked>
+                        <span>In Progress</span>
+                        <span class="filter-count">3</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Resolved</span>
+                        <span class="filter-count">12</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Closed</span>
+                        <span class="filter-count">45</span>
+                    </label>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-title">Severity</div>
+                    <label class="filter-option">
+                        <input type="checkbox" checked>
+                        <span>Critical</span>
+                        <span class="filter-count">2</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" checked>
+                        <span>High</span>
+                        <span class="filter-count">4</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" checked>
+                        <span>Medium</span>
+                        <span class="filter-count">2</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Low</span>
+                        <span class="filter-count">8</span>
+                    </label>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-title">Date Range</div>
+                    <input type="date" class="date-input" value="2024-11-01">
+                    <input type="date" class="date-input" value="2024-11-13">
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-title">Assigned To</div>
+                    <label class="filter-option">
+                        <input type="checkbox" checked>
+                        <span>Unassigned</span>
+                        <span class="filter-count">3</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>Me</span>
+                        <span class="filter-count">2</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox">
+                        <span>My Team</span>
+                        <span class="filter-count">3</span>
+                    </label>
+                </div>
+                
+                <button class="btn btn-sm" style="width: 100%; margin-top: var(--spacing-md);">
+                    🔄 Reset Filters
+                </button>
+            </div>
+            
+            <!-- Alert List -->
+            <div class="alert-list">
+                <div class="alert-list-header">
+                    <div class="alert-count">Showing 8 alerts</div>
+                    <div class="view-options">
+                        <button class="btn btn-sm">📋 Bulk Actions</button>
+                        <button class="btn btn-sm">📤 Export</button>
+                    </div>
+                </div>
+                
+                <!-- Alert cards will be inserted here by JavaScript -->
+                <div id="alertContainer"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Help Panel (sliding from right) -->
+    <aside id="helpPanel" class="help-panel">
+        <div class="help-panel-header">
+            <div class="help-panel-title-container">
+                <h2 id="helpTitle" class="help-panel-title">Help</h2>
+            </div>
+            <button id="closeHelp" class="help-panel-close">×</button>
+        </div>
+        <div id="helpContent" class="help-panel-content">
+            <!-- Dynamic content loaded here -->
+        </div>
+    </aside>
+    
+    <!-- Tooltip Bubble -->
+    <div id="tooltipBubble" class="tooltip-bubble">
+        <div class="tooltip-header">
+            <span id="tooltipTitle"></span>
+            <button id="tooltipClose">×</button>
+        </div>
+        <div id="tooltipContent"></div>
+    </div>
+    
+    <!-- JavaScript Modules -->
+    <script src="assets/js/context-engine.js"></script>
+    <script src="assets/js/help-panel.js"></script>
+    <script src="assets/js/tooltip.js"></script>
+    <script src="assets/js/user-selector.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    <script src="assets/js/content-generator.js"></script>
+    
+    <!-- Page Initialization -->
+    <script>
+        // Mock alert data
+        const mockAlerts = [
+            {
+                id: 'WB-2024-001',
+                severity: 'critical',
+                status: 'new',
+                title: 'Ransomware Activity Detected on Multiple Endpoints',
+                description: 'Suspicious file encryption behavior detected across 5 endpoints. Potential ransomware attack in progress.',
+                timestamp: '2024-11-13 09:45:23',
+                assignedTo: 'Unassigned',
+                affectedAssets: 5,
+                impactedUsers: 3,
+                detectionSource: 'Endpoint Sensor',
+                mitreTactics: ['Initial Access', 'Execution', 'Impact'],
+                details: {
+                    firstSeen: '2024-11-13 09:42:15',
+                    lastSeen: '2024-11-13 09:45:23',
+                    affectedEndpoints: ['WIN-SRV-01', 'WIN-WS-042', 'WIN-WS-087', 'WIN-WS-103', 'WIN-WS-156'],
+                    malwareFamily: 'LockBit 3.0',
+                    iocs: ['C:\\Temp\\encrypt.exe', '192.168.1.45:8443'],
+                    timeline: [
+                        { time: '09:42:15', event: 'Initial detection on WIN-SRV-01' },
+                        { time: '09:43:02', event: 'Lateral movement detected to WIN-WS-042' },
+                        { time: '09:44:18', event: 'File encryption activity on 3 additional endpoints' },
+                        { time: '09:45:23', event: 'Alert generated and escalated' }
+                    ]
+                }
+            },
+            {
+                id: 'WB-2024-002',
+                severity: 'high',
+                status: 'in-progress',
+                title: 'Suspicious PowerShell Execution with Obfuscation',
+                description: 'Encoded PowerShell command executed with bypass execution policy. Possible credential theft attempt.',
+                timestamp: '2024-11-13 08:22:11',
+                assignedTo: 'Sarah Chen',
+                affectedAssets: 1,
+                impactedUsers: 1,
+                detectionSource: 'Behavior Monitoring',
+                mitreTactics: ['Execution', 'Defense Evasion', 'Credential Access'],
+                details: {
+                    firstSeen: '2024-11-13 08:22:11',
+                    lastSeen: '2024-11-13 08:22:11',
+                    affectedEndpoints: ['WIN-WS-234'],
+                    commandLine: 'powershell.exe -enc JABzAD0ATgBlAHcALQBPAGIAagBlAGMAdAAgAEkATwAuAE0A...',
+                    parentProcess: 'outlook.exe',
+                    iocs: ['powershell.exe', 'Base64 encoded command'],
+                    timeline: [
+                        { time: '08:22:11', event: 'Suspicious PowerShell execution detected' },
+                        { time: '08:22:45', event: 'Alert assigned to Sarah Chen' },
+                        { time: '08:35:12', event: 'Investigation started - process isolated' }
+                    ]
+                }
+            },
+            {
+                id: 'WB-2024-003',
+                severity: 'high',
+                status: 'new',
+                title: 'Brute Force Attack Against VPN Gateway',
+                description: 'Multiple failed authentication attempts from external IP address targeting VPN service.',
+                timestamp: '2024-11-13 07:15:44',
+                assignedTo: 'Unassigned',
+                affectedAssets: 1,
+                impactedUsers: 0,
+                detectionSource: 'Network Sensor',
+                mitreTactics: ['Initial Access', 'Credential Access'],
+                details: {
+                    firstSeen: '2024-11-13 06:45:00',
+                    lastSeen: '2024-11-13 07:15:44',
+                    sourceIP: '185.220.101.42',
+                    targetService: 'VPN Gateway (vpn.company.com)',
+                    attemptCount: 1247,
+                    targetedAccounts: ['admin', 'administrator', 'root', 'vpnuser'],
+                    iocs: ['185.220.101.42'],
+                    timeline: [
+                        { time: '06:45:00', event: 'First failed login attempt detected' },
+                        { time: '07:00:15', event: 'Attack rate increased to 50 attempts/min' },
+                        { time: '07:15:44', event: 'Alert threshold exceeded - 1000+ attempts' }
+                    ]
+                }
+            },
+            {
+                id: 'WB-2024-004',
+                severity: 'critical',
+                status: 'in-progress',
+                title: 'Data Exfiltration to Suspicious Cloud Storage',
+                description: 'Large volume of sensitive data uploaded to unauthorized cloud storage service.',
+                timestamp: '2024-11-12 16:33:09',
+                assignedTo: 'Michael Torres',
+                affectedAssets: 2,
+                impactedUsers: 1,
+                detectionSource: 'DLP Sensor',
+                mitreTactics: ['Collection', 'Exfiltration'],
+                details: {
+                    firstSeen: '2024-11-12 16:15:00',
+                    lastSeen: '2024-11-12 16:33:09',
+                    affectedEndpoints: ['WIN-WS-089', 'WIN-WS-090'],
+                    dataVolume: '2.4 GB',
+                    destination: 'mega.nz',
+                    fileTypes: ['Financial Reports', 'Customer Database', 'Source Code'],
+                    iocs: ['mega.nz', 'User: jsmith@company.com'],
+                    timeline: [
+                        { time: '16:15:00', event: 'Unusual upload activity detected' },
+                        { time: '16:20:33', event: 'DLP policy violation - sensitive data detected' },
+                        { time: '16:33:09', event: 'Alert generated - 2GB+ uploaded' },
+                        { time: '16:45:22', event: 'Network access blocked for affected user' }
+                    ]
+                }
+            },
+            {
+                id: 'WB-2024-005',
+                severity: 'medium',
+                status: 'new',
+                title: 'Suspicious Email with Malicious Attachment',
+                description: 'Phishing email with weaponized document detected and quarantined.',
+                timestamp: '2024-11-12 14:18:55',
+                assignedTo: 'Unassigned',
+                affectedAssets: 1,
+                impactedUsers: 12,
+                detectionSource: 'Email Security',
+                mitreTactics: ['Initial Access', 'Execution'],
+                details: {
+                    firstSeen: '2024-11-12 14:18:55',
+                    lastSeen: '2024-11-12 14:18:55',
+                    sender: 'support@paypa1-secure.com',
+                    subject: 'Urgent: Verify Your Account',
+                    recipients: 12,
+                    attachmentName: 'invoice_2024_11.docx',
+                    malwareFamily: 'Emotet',
+                    iocs: ['paypa1-secure.com', 'invoice_2024_11.docx', 'SHA256: a3f5b...'],
+                    timeline: [
+                        { time: '14:18:55', event: 'Malicious email detected and quarantined' },
+                        { time: '14:19:02', event: 'All recipients notified' },
+                        { time: '14:19:15', event: 'Sender domain added to block list' }
+                    ]
+                }
+            },
+            {
+                id: 'WB-2024-006',
+                severity: 'high',
+                status: 'in-progress',
+                title: 'Privilege Escalation Attempt Detected',
+                description: 'User account attempting to gain elevated privileges through exploitation.',
+                timestamp: '2024-11-12 11:42:30',
+                assignedTo: 'Sarah Chen',
+                affectedAssets: 1,
+                impactedUsers: 1,
+                detectionSource: 'Endpoint Sensor',
+                mitreTactics: ['Privilege Escalation', 'Defense Evasion'],
+                details: {
+                    firstSeen: '2024-11-12 11:42:30',
+                    lastSeen: '2024-11-12 11:42:30',
+                    affectedEndpoints: ['WIN-WS-167'],
+                    exploitUsed: 'CVE-2024-1234 (Windows Print Spooler)',
+                    targetAccount: 'SYSTEM',
+                    sourceAccount: 'jdoe@company.com',
+                    iocs: ['spoolsv.exe', 'Suspicious DLL injection'],
+                    timeline: [
+                        { time: '11:42:30', event: 'Privilege escalation attempt detected' },
+                        { time: '11:42:45', event: 'Process terminated automatically' },
+                        { time: '11:50:12', event: 'Investigation started by Sarah Chen' }
+                    ]
+                }
+            },
+            {
+                id: 'WB-2024-007',
+                severity: 'medium',
+                status: 'new',
+                title: 'Unusual Network Traffic to Known C2 Server',
+                description: 'Endpoint communicating with known command and control infrastructure.',
+                timestamp: '2024-11-12 09:05:17',
+                assignedTo: 'Unassigned',
+                affectedAssets: 1,
+                impactedUsers: 1,
+                detectionSource: 'Network Sensor',
+                mitreTactics: ['Command and Control', 'Exfiltration'],
+                details: {
+                    firstSeen: '2024-11-12 08:45:00',
+                    lastSeen: '2024-11-12 09:05:17',
+                    affectedEndpoints: ['WIN-WS-201'],
+                    c2Server: '45.142.212.61:443',
+                    protocol: 'HTTPS',
+                    dataTransferred: '145 MB',
+                    iocs: ['45.142.212.61', 'TLS certificate mismatch'],
+                    timeline: [
+                        { time: '08:45:00', event: 'First connection to suspicious IP detected' },
+                        { time: '08:55:30', event: 'IP matched threat intelligence feed' },
+                        { time: '09:05:17', event: 'Alert generated - ongoing communication' }
+                    ]
+                }
+            },
+            {
+                id: 'WB-2024-008',
+                severity: 'high',
+                status: 'new',
+                title: 'Unauthorized Access to Sensitive File Share',
+                description: 'User accessing restricted file share outside normal working hours.',
+                timestamp: '2024-11-11 23:47:22',
+                assignedTo: 'Unassigned',
+                affectedAssets: 1,
+                impactedUsers: 1,
+                detectionSource: 'File Activity Monitoring',
+                mitreTactics: ['Collection', 'Credential Access'],
+                details: {
+                    firstSeen: '2024-11-11 23:47:22',
+                    lastSeen: '2024-11-11 23:52:18',
+                    affectedEndpoints: ['FILE-SRV-03'],
+                    userAccount: 'contractor_temp@company.com',
+                    accessedPath: '\\\\FILE-SRV-03\\Finance\\Confidential',
+                    filesAccessed: 47,
+                    iocs: ['Unusual access time', 'Contractor account', 'Bulk file access'],
+                    timeline: [
+                        { time: '23:47:22', event: 'Access to restricted share detected' },
+                        { time: '23:48:15', event: 'Multiple files opened in rapid succession' },
+                        { time: '23:52:18', event: 'Alert generated - policy violation' }
+                    ]
+                }
+            }
+        ];
+        
+        // Function to create alert card HTML
+        function createAlertCard(alert) {
+            const severityClass = `severity-${alert.severity}`;
+            const statusClass = `status-${alert.status.replace(' ', '-')}`;
+            
+            return `
+                <div class="alert-card" data-alert-id="${alert.id}">
+                    <div class="alert-header">
+                        <div class="severity-badge ${severityClass}">${alert.severity}</div>
+                        <div class="alert-info">
+                            <div class="alert-title">${alert.title}</div>
+                            <div class="alert-meta">
+                                <span class="alert-meta-item">🆔 ${alert.id}</span>
+                                <span class="alert-meta-item">🕐 ${alert.timestamp}</span>
+                                <span class="alert-meta-item">👤 ${alert.assignedTo}</span>
+                                <span class="alert-meta-item">
+                                    <span class="status-badge ${statusClass}">
+                                        ${alert.status === 'new' ? '🆕' : alert.status === 'in-progress' ? '⏳' : '✅'} 
+                                        ${alert.status.charAt(0).toUpperCase() + alert.status.slice(1).replace('-', ' ')}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="alert-description">${alert.description}</div>
+                        </div>
+                        <div class="alert-expand-icon">▼</div>
+                    </div>
+                    <div class="alert-details">
+                        <div class="detail-section">
+                            <div class="detail-title">Alert Information</div>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">Detection Source</div>
+                                    <div class="detail-value">${alert.detectionSource}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Affected Assets</div>
+                                    <div class="detail-value highlight">${alert.affectedAssets}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Impacted Users</div>
+                                    <div class="detail-value highlight">${alert.impactedUsers}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">MITRE ATT&CK Tactics</div>
+                                    <div class="detail-value">${alert.mitreTactics.join(', ')}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">Investigation Details</div>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">First Seen</div>
+                                    <div class="detail-value">${alert.details.firstSeen}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Last Seen</div>
+                                    <div class="detail-value">${alert.details.lastSeen}</div>
+                                </div>
+                                ${Object.entries(alert.details).filter(([key]) => 
+                                    !['firstSeen', 'lastSeen', 'timeline', 'iocs'].includes(key)
+                                ).map(([key, value]) => `
+                                    <div class="detail-item">
+                                        <div class="detail-label">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</div>
+                                        <div class="detail-value">${Array.isArray(value) ? value.join(', ') : value}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">Indicators of Compromise (IOCs)</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: var(--line-height-relaxed);">
+                                ${alert.details.iocs.map(ioc => `<div style="padding: var(--spacing-xs) 0;">🔍 ${ioc}</div>`).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">Investigation Timeline</div>
+                            <div class="timeline">
+                                ${alert.details.timeline.map(item => `
+                                    <div class="timeline-item">
+                                        <div class="timeline-time">${item.time}</div>
+                                        <div class="timeline-event">${item.event}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="alert-actions">
+                            <button class="btn btn-primary">🔍 Investigate</button>
+                            <button class="btn">✅ Close Alert</button>
+                            <button class="btn">⬆️ Escalate</button>
+                            <button class="btn">👤 Assign to Me</button>
+                            <button class="btn">💬 Add Comment</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Render all alerts
+        function renderAlerts() {
+            const container = document.getElementById('alertContainer');
+            container.innerHTML = mockAlerts.map(alert => createAlertCard(alert)).join('');
+            
+            // Add click handlers for expand/collapse
+            document.querySelectorAll('.alert-card').forEach(card => {
+                const header = card.querySelector('.alert-header');
+                header.addEventListener('click', () => {
+                    // Close other expanded cards
+                    document.querySelectorAll('.alert-card.expanded').forEach(otherCard => {
+                        if (otherCard !== card) {
+                            otherCard.classList.remove('expanded');
+                        }
+                    });
+                    
+                    // Toggle this card
+                    card.classList.toggle('expanded');
+                    
+                    // Update context when expanding
+                    if (card.classList.contains('expanded')) {
+                        const alertId = card.dataset.alertId;
+                        contextEngine.updateContext({ 
+                            currentSection: 'alert-details',
+                            activeElement: alertId
+                        });
+                    }
+                });
+            });
+        }
+        
+        // Initialize context engine
+        const contextEngine = new ContextEngine();
+        contextEngine.setCurrentPage('workbench');
+        
+        // Initialize content generator
+        const contentGenerator = new ContentGenerator();
+        
+        // Initialize help panel
+        const helpPanel = new HelpPanel(contextEngine, contentGenerator);
+        
+        // Initialize tooltip manager
+        const tooltipManager = new TooltipManager(contextEngine);
+        
+        // Initialize user selector
+        const userSelector = new UserSelector(contextEngine);
+        
+        // Initialize navigation
+        const navigation = new Navigation(contextEngine);
+        navigation.init();
+        
+        // Render alerts
+        renderAlerts();
+        
+        // Connect help button to help panel
+        document.getElementById('helpButton').addEventListener('click', () => {
+            helpPanel.open();
+        });
+        
+        // Connect close button
+        document.getElementById('closeHelp').addEventListener('click', () => {
+            helpPanel.close();
+        });
+        
+        // Connect ESC key to close help panel
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && helpPanel.isOpen) {
+                helpPanel.close();
+            }
+        });
+        
+        // Connect help icons to tooltips
+        document.querySelectorAll('.help-icon').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const tooltipKey = icon.dataset.tooltip;
+                const contextKey = `${contextEngine.context.userType}:workbench:${tooltipKey}`;
+                tooltipManager.show(icon, contextKey);
+            });
+        });
+        
+        console.log('Workbench page initialized');
+        console.log('Current context:', contextEngine.getContext());
+        console.log(`Loaded ${mockAlerts.length} alerts`);
+    </script>
+</body>
+</html>

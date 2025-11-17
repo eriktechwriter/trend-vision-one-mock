@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Documentation POC - Trend Vision One™</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    
+    <style>
+        /* Landing page specific styles */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
+        }
+        
+        /* Header */
+        .landing-header {
+            padding: var(--spacing-xl) var(--spacing-lg);
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+            background-color: var(--color-bg-secondary);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--tm-red) 0%, var(--tm-red-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-3xl);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .landing-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .landing-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .poc-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--tm-red), var(--tm-red-light));
+            color: var(--color-text-primary);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--radius-xl);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* Main content */
+        .landing-main {
+            flex: 1;
+            padding: var(--spacing-2xl) var(--spacing-lg);
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        /* Overview section */
+        .overview-section {
+            background-color: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .overview-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .overview-content {
+            color: var(--color-text-secondary);
+            line-height: var(--line-height-relaxed);
+            font-size: var(--font-size-base);
+        }
+        
+        .overview-content p {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .overview-content strong {
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .feature-list li {
+            position: relative;
+            padding-left: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+            color: var(--color-text-secondary);
+            line-height: var(--line-height-relaxed);
+        }
+        
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-lg);
+        }
+        
+        /* Navigation cards */
+        .nav-cards-section {
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+        
+        .nav-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        
+        .nav-card {
+            background-color: var(--color-bg-secondary);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            text-decoration: none;
+            transition: all var(--transition-base);
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .nav-card:hover {
+            border-color: var(--tm-red);
+            background-color: var(--color-bg-tertiary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            text-decoration: none;
+        }
+        
+        .nav-card-icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing-md);
+            display: block;
+        }
+        
+        .nav-card-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .nav-card-description {
+            color: var(--color-text-secondary);
+            line-height: var(--line-height-relaxed);
+            font-size: var(--font-size-sm);
+        }
+        
+        .nav-card-arrow {
+            display: inline-block;
+            margin-top: var(--spacing-md);
+            color: var(--tm-red-light);
+            font-weight: var(--font-weight-semibold);
+            transition: transform var(--transition-fast);
+        }
+        
+        .nav-card:hover .nav-card-arrow {
+            transform: translateX(4px);
+        }
+        
+        /* Instructions section */
+        .instructions-section {
+            background-color: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .instructions-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .instruction-steps {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+        
+        .instruction-step {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: flex-start;
+        }
+        
+        .step-number {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--tm-red), var(--tm-red-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-base);
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .step-description {
+            color: var(--color-text-secondary);
+            line-height: var(--line-height-relaxed);
+            font-size: var(--font-size-sm);
+        }
+        
+        /* Footer */
+        .landing-footer {
+            padding: var(--spacing-xl) var(--spacing-lg);
+            text-align: center;
+            border-top: 1px solid var(--color-border);
+            background-color: var(--color-bg-secondary);
+            color: var(--color-text-tertiary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .footer-links a {
+            color: var(--tm-red-light);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        
+        .footer-links a:hover {
+            color: var(--tm-red);
+            text-decoration: underline;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .landing-title {
+                font-size: var(--font-size-2xl);
+            }
+            
+            .landing-subtitle {
+                font-size: var(--font-size-base);
+            }
+            
+            .nav-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .landing-main {
+                padding: var(--spacing-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="landing-header">
+        <div class="logo-container">
+            <div class="logo-icon">T</div>
+            <div>
+                <h1 class="landing-title">Trend Vision One™</h1>
+                <p class="landing-subtitle">Agentic Documentation Proof of Concept</p>
+            </div>
+        </div>
+        <span class="poc-badge">Demo Environment</span>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="landing-main">
+        <!-- Overview Section -->
+        <section class="overview-section">
+            <h2 class="overview-title">
+                <span>🤖</span>
+                Welcome to the Agentic Documentation POC
+            </h2>
+            <div class="overview-content">
+                <p>
+                    This proof of concept demonstrates <strong>agentic documentation</strong> – an AI-powered approach to generating 
+                    customized, context-aware documentation that adapts to your role, current task, and location within the product.
+                </p>
+                <p>
+                    Unlike traditional static help systems, agentic documentation understands <strong>who you are</strong>, 
+                    <strong>what you're trying to do</strong>, and <strong>where you are</strong> in the product, then generates 
+                    personalized guidance tailored specifically to your needs.
+                </p>
+                
+                <h3 style="color: var(--color-text-primary); font-size: var(--font-size-lg); margin-top: var(--spacing-lg); margin-bottom: var(--spacing-md);">
+                    Key Features:
+                </h3>
+                <ul class="feature-list">
+                    <li>
+                        <strong>Role-Based Personalization:</strong> Switch between Admin, Security Analyst, CISO, and Report Viewer 
+                        roles to see how documentation adapts to different user perspectives
+                    </li>
+                    <li>
+                        <strong>Context-Aware Help:</strong> Click the help button (❓) on any page to receive guidance specific to 
+                        your current location and task
+                    </li>
+                    <li>
+                        <strong>Interactive Tooltips:</strong> Hover over help icons throughout the interface to get quick, 
+                        contextual explanations
+                    </li>
+                    <li>
+                        <strong>Realistic Product Simulation:</strong> Explore three key product areas with authentic UI elements 
+                        and workflows
+                    </li>
+                </ul>
+                
+                <p style="margin-top: var(--spacing-lg); padding: var(--spacing-md); background-color: var(--color-bg-tertiary); border-left: 3px solid var(--tm-red); border-radius: var(--radius-sm);">
+                    <strong>💡 Note:</strong> This is a demonstration environment with simulated data. The AI-powered documentation 
+                    generation uses pre-configured content to showcase the concept. In a production system, this would connect to 
+                    a live LLM to generate dynamic, real-time responses.
+                </p>
+            </div>
+        </section>
+        
+        <!-- Navigation Cards -->
+        <section class="nav-cards-section">
+            <h2 class="section-title">Explore the Demo</h2>
+            <div class="nav-cards">
+                <a href="attack-surface.html" class="nav-card">
+                    <span class="nav-card-icon">🔍</span>
+                    <h3 class="nav-card-title">Attack Surface Discovery</h3>
+                    <p class="nav-card-description">
+                        Discover and assess all devices, internet-facing assets, accounts, and applications across your 
+                        environment. View risk scores, data sources, and device inventory.
+                    </p>
+                    <span class="nav-card-arrow">Explore →</span>
+                </a>
+                
+                <a href="workbench.html" class="nav-card">
+                    <span class="nav-card-icon">⚠️</span>
+                    <h3 class="nav-card-title">Workbench</h3>
+                    <p class="nav-card-description">
+                        Investigate security alerts and incidents with detailed threat information, severity indicators, 
+                        and investigation timelines. Take action on threats in real-time.
+                    </p>
+                    <span class="nav-card-arrow">Explore →</span>
+                </a>
+                
+                <a href="endpoint-inventory.html" class="nav-card">
+                    <span class="nav-card-icon">💻</span>
+                    <h3 class="nav-card-title">Endpoint Inventory</h3>
+                    <p class="nav-card-description">
+                        Manage your complete device inventory with detailed information about operating systems, 
+                        security status, risk scores, and agent deployment across all endpoints.
+                    </p>
+                    <span class="nav-card-arrow">Explore →</span>
+                </a>
+            </div>
+        </section>
+        
+        <!-- Instructions Section -->
+        <section class="instructions-section">
+            <h2 class="instructions-title">
+                <span>📖</span>
+                How to Use This Demo
+            </h2>
+            <div class="instruction-steps">
+                <div class="instruction-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Choose a Page to Explore</h3>
+                        <p class="step-description">
+                            Click on any of the three navigation cards above to enter a simulated product page. Each page 
+                            represents a different area of Trend Vision One with realistic UI elements and data.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="instruction-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Select Your User Role</h3>
+                        <p class="step-description">
+                            In the top-right corner of each page, you'll find a user type selector. Switch between Admin, 
+                            Security Analyst, CISO, and Report Viewer to see how the documentation adapts to different roles 
+                            and responsibilities.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="instruction-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Access Context-Aware Help</h3>
+                        <p class="step-description">
+                            Click the help button (❓) in the top-right corner to open the help panel. The content you see 
+                            will be customized based on your current page, selected user role, and the section you're viewing. 
+                            Try it from different pages and with different user roles to see the variation.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="instruction-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Explore Interactive Tooltips</h3>
+                        <p class="step-description">
+                            Look for help icons (❓) next to tabs, buttons, and other UI elements. Click these icons to see 
+                            quick, contextual tooltips that explain specific features. These tooltips also adapt based on 
+                            your selected user role.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="instruction-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Navigate Between Pages</h3>
+                        <p class="step-description">
+                            Use the side navigation menu on the left to switch between different product areas. Notice how 
+                            the help content changes as you move to different pages, demonstrating the context-aware nature 
+                            of the system.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <div class="footer-links">
+            <a href="https://github.com/eriktechwriter/agentic-docs-poc" target="_blank">GitHub Repository</a>
+            <a href="https://eriktechwriter.github.io/agentic-docs-poc/" target="_blank">Full Documentation</a>
+            <a href="attack-surface.html">Start Demo</a>
+        </div>
+        <p>
+            © 2024 Trend Micro Incorporated. This is a proof-of-concept demonstration environment.
+        </p>
+    </footer>
+</body>
+</html>

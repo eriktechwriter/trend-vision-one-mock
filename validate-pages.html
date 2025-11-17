@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Validation - Agentic Docs POC</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #0f1419;
+            color: #ffffff;
+        }
+        h1 {
+            color: #d71921;
+        }
+        .test-section {
+            background: #1a1f26;
+            border: 1px solid #2d3440;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .pass {
+            background: #10b98144;
+            border-left: 4px solid #10b981;
+        }
+        .fail {
+            background: #ef444444;
+            border-left: 4px solid #ef4444;
+        }
+        .warn {
+            background: #f59e0b44;
+            border-left: 4px solid #f59e0b;
+        }
+        button {
+            background: #d71921;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #b01419;
+        }
+        #results {
+            margin-top: 20px;
+        }
+        .summary {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .summary.pass {
+            color: #10b981;
+        }
+        .summary.fail {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Page Validation Tool</h1>
+    <p>This tool validates all pages in the mock website for common issues.</p>
+    
+    <div class="test-section">
+        <h2>Run Validation Tests</h2>
+        <button onclick="runAllTests()">Run All Tests</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        const pages = [
+            'index.html',
+            'attack-surface.html',
+            'workbench.html',
+            'endpoint-inventory.html'
+        ];
+        
+        const jsModules = [
+            'assets/js/context-engine.js',
+            'assets/js/help-panel.js',
+            'assets/js/tooltip.js',
+            'assets/js/user-selector.js',
+            'assets/js/navigation.js',
+            'assets/js/content-generator.js'
+        ];
+        
+        const cssFiles = [
+            'assets/css/common.css',
+            'assets/css/components.css',
+            'assets/css/pages.css'
+        ];
+        
+        const dataFiles = [
+            'assets/data/help-content.json',
+            'assets/data/tooltip-content.json',
+            'assets/data/user-profiles.json'
+        ];
+        
+        let results = [];
+        
+        function addResult(category, test, status, message) {
+            results.push({ category, test, status, message });
+            displayResults();
+        }
+        
+        function displayResults() {
+            const resultsDiv = document.getElementById('results');
+            const categories = {};
+            
+            // Group by category
+            results.forEach(r => {
+                if (!categories[r.category]) {
+                    categories[r.category] = [];
+                }
+                categories[r.category].push(r);
+            });
+            
+            // Count totals
+            const total = results.length;
+            const passed = results.filter(r => r.status === 'pass').length;
+            const failed = results.filter(r => r.status === 'fail').length;
+            const warnings = results.filter(r => r.status === 'warn').length;
+            
+            let html = `
+                <div class="summary ${failed > 0 ? 'fail' : 'pass'}">
+                    ${passed}/${total} tests passed
+                    ${failed > 0 ? `(${failed} failed, ${warnings} warnings)` : ''}
+                </div>
+            `;
+            
+            // Display by category
+            for (const [category, tests] of Object.entries(categories)) {
+                html += `<div class="test-section"><h3>${category}</h3>`;
+                tests.forEach(t => {
+                    html += `
+                        <div class="test-result ${t.status}">
+                            <strong>${t.test}:</strong> ${t.message}
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        function clearResults() {
+            results = [];
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        async function runAllTests() {
+            clearResults();
+            
+            // Test 1: Check if all pages exist
+            addResult('Page Existence', 'Checking pages', 'pass', 'Starting page existence checks...');
+            for (const page of pages) {
+                try {
+                    const response = await fetch(page, { method: 'HEAD' });
+                    if (response.ok) {
+                        addResult('Page Existence', page, 'pass', 'Page exists and is accessible');
+                    } else {
+                        addResult('Page Existence', page, 'fail', `HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    addResult('Page Existence', page, 'fail', error.message);
+                }
+            }
+            
+            // Test 2: Check if all JS modules exist
+            addResult('JavaScript Modules', 'Checking JS files', 'pass', 'Starting JS module checks...');
+            for (const js of jsModules) {
+                try {
+                    const response = await fetch(js, { method: 'HEAD' });
+                    if (response.ok) {
+                        addResult('JavaScript Modules', js, 'pass', 'Module exists');
+                    } else {
+                        addResult('JavaScript Modules', js, 'fail', `HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    addResult('JavaScript Modules', js, 'fail', error.message);
+                }
+            }
+            
+            // Test 3: Check if all CSS files exist
+            addResult('CSS Files', 'Checking CSS files', 'pass', 'Starting CSS file checks...');
+            for (const css of cssFiles) {
+                try {
+                    const response = await fetch(css, { method: 'HEAD' });
+                    if (response.ok) {
+                        addResult('CSS Files', css, 'pass', 'CSS file exists');
+                    } else {
+                        addResult('CSS Files', css, 'fail', `HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    addResult('CSS Files', css, 'fail', error.message);
+                }
+            }
+            
+            // Test 4: Check if all data files exist
+            addResult('Data Files', 'Checking data files', 'pass', 'Starting data file checks...');
+            for (const data of dataFiles) {
+                try {
+                    const response = await fetch(data);
+                    if (response.ok) {
+                        const json = await response.json();
+                        addResult('Data Files', data, 'pass', `Valid JSON with ${Object.keys(json).length} keys`);
+                    } else {
+                        addResult('Data Files', data, 'fail', `HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    addResult('Data Files', data, 'fail', error.message);
+                }
+            }
+            
+            // Test 5: Check localStorage functionality
+            addResult('Browser Features', 'localStorage', 'pass', 'Testing localStorage...');
+            try {
+                localStorage.setItem('test', 'value');
+                const value = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                if (value === 'value') {
+                    addResult('Browser Features', 'localStorage', 'pass', 'localStorage works correctly');
+                } else {
+                    addResult('Browser Features', 'localStorage', 'fail', 'localStorage read/write mismatch');
+                }
+            } catch (error) {
+                addResult('Browser Features', 'localStorage', 'warn', 'localStorage not available: ' + error.message);
+            }
+            
+            // Test 6: Check sessionStorage functionality
+            addResult('Browser Features', 'sessionStorage', 'pass', 'Testing sessionStorage...');
+            try {
+                sessionStorage.setItem('test', 'value');
+                const value = sessionStorage.getItem('test');
+                sessionStorage.removeItem('test');
+                if (value === 'value') {
+                    addResult('Browser Features', 'sessionStorage', 'pass', 'sessionStorage works correctly');
+                } else {
+                    addResult('Browser Features', 'sessionStorage', 'fail', 'sessionStorage read/write mismatch');
+                }
+            } catch (error) {
+                addResult('Browser Features', 'sessionStorage', 'warn', 'sessionStorage not available: ' + error.message);
+            }
+            
+            // Test 7: Check if required DOM elements exist on current page
+            addResult('DOM Elements', 'Checking current page', 'pass', 'Checking DOM structure...');
+            const requiredElements = ['head', 'body', 'title'];
+            requiredElements.forEach(tag => {
+                const element = document.querySelector(tag);
+                if (element) {
+                    addResult('DOM Elements', tag, 'pass', `<${tag}> element exists`);
+                } else {
+                    addResult('DOM Elements', tag, 'fail', `<${tag}> element missing`);
+                }
+            });
+            
+            // Test 8: Check viewport meta tag
+            const viewport = document.querySelector('meta[name="viewport"]');
+            if (viewport) {
+                addResult('Responsive Design', 'viewport meta', 'pass', 'Viewport meta tag present');
+            } else {
+                addResult('Responsive Design', 'viewport meta', 'warn', 'Viewport meta tag missing');
+            }
+            
+            // Test 9: Check charset
+            const charset = document.querySelector('meta[charset]');
+            if (charset && charset.getAttribute('charset').toLowerCase() === 'utf-8') {
+                addResult('HTML Validation', 'charset', 'pass', 'UTF-8 charset declared');
+            } else {
+                addResult('HTML Validation', 'charset', 'warn', 'UTF-8 charset not properly declared');
+            }
+            
+            // Test 10: Check for console errors (can't actually check, but we can note it)
+            addResult('Console', 'Error check', 'warn', 'Check browser console manually for errors');
+            
+            addResult('Summary', 'All tests complete', 'pass', 'Validation complete! Review results above.');
+        }
+    </script>
+</body>
+</html>

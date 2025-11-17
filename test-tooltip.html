@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tooltip Component Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        
+        .test-section h2 {
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 18px;
+        }
+        
+        .help-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: #d71921;
+            color: white;
+            border-radius: 50%;
+            font-size: 14px;
+            cursor: pointer;
+            margin-left: 8px;
+            border: none;
+            font-weight: bold;
+        }
+        
+        .help-icon:hover {
+            background: #b01419;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .test-item {
+            padding: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        /* Tooltip Styles */
+        .tooltip-bubble {
+            position: fixed;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 300px;
+            z-index: 10000;
+            transition: opacity 0.2s ease;
+        }
+        
+        .tooltip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tooltip-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .tooltip-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        
+        .tooltip-close:hover {
+            color: #333;
+        }
+        
+        .tooltip-content {
+            padding: 16px;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .tooltip-content p {
+            margin: 0 0 8px 0;
+        }
+        
+        .tooltip-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .tooltip-content strong {
+            color: #333;
+        }
+        
+        .tooltip-content code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        /* Position-specific arrow styles (optional enhancement) */
+        .tooltip-bubble.tooltip-top::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid white;
+        }
+        
+        .tooltip-bubble.tooltip-bottom::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid white;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .button {
+            padding: 10px 20px;
+            background: #d71921;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        
+        .button:hover {
+            background: #b01419;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tooltip Component Test</h1>
+        
+        <div class="test-section">
+            <h2>Test 1: Basic Tooltips with Different Positions</h2>
+            <p>Click the help icons to test tooltips in different positions:</p>
+            
+            <div class="test-grid">
+                <div class="test-item">
+                    <span>Top Position</span>
+                    <button class="help-icon" data-tooltip="top" data-content="This tooltip appears above the trigger element.">?</button>
+                </div>
+                <div class="test-item">
+                    <span>Bottom Position</span>
+                    <button class="help-icon" data-tooltip="bottom" data-content="This tooltip appears below the trigger element.">?</button>
+                </div>
+                <div class="test-item">
+                    <span>Left Position</span>
+                    <button class="help-icon" data-tooltip="left" data-content="This tooltip appears to the left of the trigger element.">?</button>
+                </div>
+                <div class="test-item">
+                    <span>Right Position</span>
+                    <button class="help-icon" data-tooltip="right" data-content="This tooltip appears to the right of the trigger element.">?</button>
+                </div>
+                <div class="test-item">
+                    <span>Auto Position</span>
+                    <button class="help-icon" data-tooltip="auto" data-content="This tooltip automatically chooses the best position based on available space.">?</button>
+                </div>
+                <div class="test-item">
+                    <span>Rich Content</span>
+                    <button class="help-icon" data-tooltip="auto" data-content-obj='{"title":"Rich Content","text":"This tooltip has **bold text**, *italic text*, and `code snippets`.\n\nIt also supports multiple paragraphs!"}'>?</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Test 2: Edge Cases</h2>
+            <p>Test tooltips near viewport edges:</p>
+            
+            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <div>
+                    <span>Top-Left Corner</span>
+                    <button class="help-icon" data-tooltip="auto" data-content="This tooltip should stay within viewport bounds even though it's near the corner.">?</button>
+                </div>
+                <div>
+                    <span>Top-Right Corner</span>
+                    <button class="help-icon" data-tooltip="auto" data-content="This tooltip should also stay within viewport bounds.">?</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Test 3: Interaction Tests</h2>
+            <p>Test various interaction behaviors:</p>
+            
+            <div style="margin-top: 20px;">
+                <button class="button" id="programmaticTest">Show Tooltip Programmatically</button>
+                <button class="button" id="hideTest">Hide Active Tooltip</button>
+                <button class="button" id="statusTest">Check Tooltip Status</button>
+            </div>
+            
+            <div id="statusDisplay" class="status" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Instructions</h2>
+            <ul style="line-height: 1.8; color: #666;">
+                <li>Click any help icon (?) to show a tooltip</li>
+                <li>Click the X button in the tooltip to close it</li>
+                <li>Click outside the tooltip to close it</li>
+                <li>Press ESC key to close the tooltip</li>
+                <li>Try clicking different help icons to see position changes</li>
+                <li>Test near viewport edges to verify boundary detection</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="assets/js/context-engine.js"></script>
+    <script src="assets/js/tooltip.js"></script>
+    
+    <script>
+        // Initialize context engine
+        const contextEngine = new ContextEngine();
+        contextEngine.setCurrentPage('test-page');
+        contextEngine.setUserType('admin');
+        
+        // Initialize tooltip manager
+        const tooltipManager = new TooltipManager(contextEngine);
+        
+        // Add click listeners to all help icons
+        document.querySelectorAll('.help-icon').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent immediate close
+                
+                const position = icon.getAttribute('data-tooltip') || 'auto';
+                const contentStr = icon.getAttribute('data-content');
+                const contentObj = icon.getAttribute('data-content-obj');
+                
+                let content;
+                if (contentObj) {
+                    try {
+                        content = JSON.parse(contentObj);
+                    } catch (err) {
+                        content = contentStr || 'Help content';
+                    }
+                } else {
+                    content = contentStr || 'Help content';
+                }
+                
+                tooltipManager.show(icon, content, position);
+            });
+        });
+        
+        // Programmatic test
+        document.getElementById('programmaticTest').addEventListener('click', () => {
+            const button = document.getElementById('programmaticTest');
+            tooltipManager.show(button, {
+                title: 'Programmatic Tooltip',
+                text: 'This tooltip was shown programmatically using the `show()` method.'
+            }, 'bottom');
+        });
+        
+        // Hide test
+        document.getElementById('hideTest').addEventListener('click', () => {
+            tooltipManager.hide();
+            showStatus('Tooltip hidden programmatically');
+        });
+        
+        // Status test
+        document.getElementById('statusTest').addEventListener('click', () => {
+            const isVisible = tooltipManager.isVisible();
+            showStatus(`Tooltip is currently ${isVisible ? 'visible' : 'hidden'}`);
+        });
+        
+        function showStatus(message) {
+            const statusDiv = document.getElementById('statusDisplay');
+            statusDiv.textContent = message;
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        console.log('Tooltip test page loaded successfully');
+        console.log('TooltipManager initialized:', tooltipManager);
+    </script>
+</body>
+</html>

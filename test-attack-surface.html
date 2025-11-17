@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Attack Surface Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .test-section {
+            background: #2a2a2a;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #d71921;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .pass {
+            background: #1a4d1a;
+            border-left: 3px solid #2ecc71;
+        }
+        .fail {
+            background: #4d1a1a;
+            border-left: 3px solid #e74c3c;
+        }
+        button {
+            background: #d71921;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #b01419;
+        }
+        #output {
+            background: #000;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Attack Surface Page - Interactive Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Controls</h2>
+        <button onclick="testContextEngine()">Test Context Engine</button>
+        <button onclick="testUserSelector()">Test User Selector</button>
+        <button onclick="testHelpPanel()">Test Help Panel</button>
+        <button onclick="testTooltips()">Test Tooltips</button>
+        <button onclick="testNavigation()">Test Navigation</button>
+        <button onclick="runAllTests()">Run All Tests</button>
+        <button onclick="clearOutput()">Clear Output</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Results</h2>
+        <div id="results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Console Output</h2>
+        <div id="output"></div>
+    </div>
+    
+    <!-- Load all JavaScript modules -->
+    <script src="assets/js/context-engine.js"></script>
+    <script src="assets/js/content-generator.js"></script>
+    <script src="assets/js/help-panel.js"></script>
+    <script src="assets/js/tooltip.js"></script>
+    <script src="assets/js/user-selector.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    
+    <script>
+        // Capture console output
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        const outputDiv = document.getElementById('output');
+        
+        function logToPage(type, ...args) {
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            
+            const line = document.createElement('div');
+            line.style.color = type === 'error' ? '#e74c3c' : type === 'warn' ? '#f39c12' : '#2ecc71';
+            line.textContent = `[${type.toUpperCase()}] ${message}`;
+            outputDiv.appendChild(line);
+            outputDiv.scrollTop = outputDiv.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            logToPage('log', ...args);
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            logToPage('error', ...args);
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            logToPage('warn', ...args);
+        };
+        
+        // Test results
+        const resultsDiv = document.getElementById('results');
+        
+        function addResult(testName, passed, message) {
+            const result = document.createElement('div');
+            result.className = `test-result ${passed ? 'pass' : 'fail'}`;
+            result.innerHTML = `<strong>${passed ? '✅' : '❌'} ${testName}</strong><br>${message}`;
+            resultsDiv.appendChild(result);
+        }
+        
+        function clearOutput() {
+            outputDiv.innerHTML = '';
+            resultsDiv.innerHTML = '';
+        }
+        
+        // Initialize components
+        let contextEngine, contentGenerator, helpPanel, tooltipManager, userSelector, navigation;
+        
+        function initializeComponents() {
+            try {
+                contextEngine = new ContextEngine();
+                contextEngine.setCurrentPage('attack-surface');
+                console.log('✓ ContextEngine initialized');
+                
+                contentGenerator = new ContentGenerator();
+                console.log('✓ ContentGenerator initialized');
+                
+                helpPanel = new HelpPanel(contextEngine, contentGenerator);
+                console.log('✓ HelpPanel initialized');
+                
+                tooltipManager = new TooltipManager(contextEngine);
+                console.log('✓ TooltipManager initialized');
+                
+                userSelector = new UserSelector(contextEngine);
+                console.log('✓ UserSelector initialized');
+                
+                navigation = new Navigation(contextEngine);
+                navigation.init();
+                console.log('✓ Navigation initialized');
+                
+                return true;
+            } catch (error) {
+                console.error('Initialization failed:', error);
+                return false;
+            }
+        }
+        
+        // Test functions
+        function testContextEngine() {
+            console.log('\n=== Testing Context Engine ===');
+            
+            try {
+                const context = contextEngine.getContext();
+                addResult('Context Engine - Get Context', 
+                    context && context.userType && context.currentPage,
+                    `Context: ${JSON.stringify(context, null, 2)}`);
+                
+                contextEngine.setUserType('analyst');
+                const newContext = contextEngine.getContext();
+                addResult('Context Engine - Set User Type',
+                    newContext.userType === 'analyst',
+                    `User type changed to: ${newContext.userType}`);
+                
+                const contextKey = contextEngine.getContextKey();
+                addResult('Context Engine - Get Context Key',
+                    contextKey.includes('analyst') && contextKey.includes('attack-surface'),
+                    `Context key: ${contextKey}`);
+                
+                console.log('✓ Context Engine tests passed');
+            } catch (error) {
+                addResult('Context Engine', false, error.message);
+                console.error('Context Engine test failed:', error);
+            }
+        }
+        
+        function testUserSelector() {
+            console.log('\n=== Testing User Selector ===');
+            
+            try {
+                addResult('User Selector - Initialization',
+                    userSelector && userSelector.contextEngine,
+                    'User selector initialized with context engine');
+                
+                console.log('✓ User Selector tests passed');
+            } catch (error) {
+                addResult('User Selector', false, error.message);
+                console.error('User Selector test failed:', error);
+            }
+        }
+        
+        async function testHelpPanel() {
+            console.log('\n=== Testing Help Panel ===');
+            
+            try {
+                addResult('Help Panel - Initialization',
+                    helpPanel && helpPanel.contextEngine && helpPanel.contentGenerator,
+                    'Help panel initialized with dependencies');
+                
+                // Test open/close
+                helpPanel.open();
+                addResult('Help Panel - Open',
+                    helpPanel.isOpen,
+                    'Help panel opened successfully');
+                
+                setTimeout(() => {
+                    helpPanel.close();
+                    addResult('Help Panel - Close',
+                        !helpPanel.isOpen,
+                        'Help panel closed successfully');
+                }, 500);
+                
+                console.log('✓ Help Panel tests passed');
+            } catch (error) {
+                addResult('Help Panel', false, error.message);
+                console.error('Help Panel test failed:', error);
+            }
+        }
+        
+        function testTooltips() {
+            console.log('\n=== Testing Tooltips ===');
+            
+            try {
+                addResult('Tooltip Manager - Initialization',
+                    tooltipManager && tooltipManager.contextEngine,
+                    'Tooltip manager initialized with context engine');
+                
+                console.log('✓ Tooltip tests passed');
+            } catch (error) {
+                addResult('Tooltip Manager', false, error.message);
+                console.error('Tooltip test failed:', error);
+            }
+        }
+        
+        function testNavigation() {
+            console.log('\n=== Testing Navigation ===');
+            
+            try {
+                addResult('Navigation - Initialization',
+                    navigation && navigation.initialized,
+                    'Navigation initialized successfully');
+                
+                const currentPage = navigation.getCurrentPage();
+                addResult('Navigation - Get Current Page',
+                    currentPage && currentPage.id,
+                    `Current page: ${JSON.stringify(currentPage, null, 2)}`);
+                
+                console.log('✓ Navigation tests passed');
+            } catch (error) {
+                addResult('Navigation', false, error.message);
+                console.error('Navigation test failed:', error);
+            }
+        }
+        
+        async function runAllTests() {
+            clearOutput();
+            console.log('🚀 Running all tests...\n');
+            
+            testContextEngine();
+            testUserSelector();
+            await testHelpPanel();
+            testTooltips();
+            testNavigation();
+            
+            console.log('\n✅ All tests completed!');
+        }
+        
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('🔧 Initializing components...\n');
+            const success = initializeComponents();
+            
+            if (success) {
+                console.log('\n✅ All components initialized successfully!');
+                console.log('Click the test buttons above to run tests.\n');
+            } else {
+                console.error('\n❌ Component initialization failed!');
+            }
+        });
+    </script>
+</body>
+</html>

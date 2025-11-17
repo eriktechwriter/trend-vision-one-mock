@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Workbench Page</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        h1 {
+            color: #d71921;
+        }
+        .test-section {
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .pass {
+            background: rgba(34, 197, 94, 0.2);
+            border-left: 4px solid #22c55e;
+        }
+        .fail {
+            background: rgba(220, 38, 38, 0.2);
+            border-left: 4px solid #ef4444;
+        }
+        button {
+            background: #d71921;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #b01419;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #3a3a3a;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Workbench Page Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Controls</h2>
+        <button onclick="runTests()">Run All Tests</button>
+        <button onclick="openWorkbench()">Open Workbench Page</button>
+        <button onclick="checkConsole()">Check Console Errors</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Results</h2>
+        <div id="results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Page Preview</h2>
+        <iframe id="preview" src="workbench.html"></iframe>
+    </div>
+    
+    <script>
+        function addResult(message, passed) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${passed ? 'pass' : 'fail'}`;
+            div.textContent = `${passed ? '✅' : '❌'} ${message}`;
+            results.appendChild(div);
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        async function runTests() {
+            clearResults();
+            addResult('Starting tests...', true);
+            
+            // Test 1: Check if workbench.html exists
+            try {
+                const response = await fetch('workbench.html');
+                if (response.ok) {
+                    addResult('Workbench page exists and loads', true);
+                } else {
+                    addResult('Workbench page not found', false);
+                    return;
+                }
+            } catch (error) {
+                addResult(`Error loading workbench page: ${error.message}`, false);
+                return;
+            }
+            
+            // Test 2: Check if JavaScript modules exist
+            const modules = [
+                'assets/js/context-engine.js',
+                'assets/js/help-panel.js',
+                'assets/js/tooltip.js',
+                'assets/js/user-selector.js',
+                'assets/js/navigation.js',
+                'assets/js/content-generator.js'
+            ];
+            
+            for (const module of modules) {
+                try {
+                    const response = await fetch(module);
+                    if (response.ok) {
+                        addResult(`Module ${module} exists`, true);
+                    } else {
+                        addResult(`Module ${module} not found`, false);
+                    }
+                } catch (error) {
+                    addResult(`Error loading ${module}: ${error.message}`, false);
+                }
+            }
+            
+            // Test 3: Check if CSS files exist
+            const cssFiles = [
+                'assets/css/common.css',
+                'assets/css/components.css',
+                'assets/css/pages.css'
+            ];
+            
+            for (const css of cssFiles) {
+                try {
+                    const response = await fetch(css);
+                    if (response.ok) {
+                        addResult(`CSS file ${css} exists`, true);
+                    } else {
+                        addResult(`CSS file ${css} not found`, false);
+                    }
+                } catch (error) {
+                    addResult(`Error loading ${css}: ${error.message}`, false);
+                }
+            }
+            
+            // Test 4: Check if help content exists
+            try {
+                const response = await fetch('assets/data/help-content.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data['admin:workbench']) {
+                        addResult('Workbench help content exists for admin', true);
+                    } else {
+                        addResult('Workbench help content missing for admin', false);
+                    }
+                    if (data['analyst:workbench']) {
+                        addResult('Workbench help content exists for analyst', true);
+                    } else {
+                        addResult('Workbench help content missing for analyst', false);
+                    }
+                } else {
+                    addResult('Help content file not found', false);
+                }
+            } catch (error) {
+                addResult(`Error loading help content: ${error.message}`, false);
+            }
+            
+            // Test 5: Check if tooltip content exists
+            try {
+                const response = await fetch('assets/data/tooltip-content.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.workbench) {
+                        addResult('Workbench tooltip content exists', true);
+                    } else {
+                        addResult('Workbench tooltip content missing', false);
+                    }
+                } else {
+                    addResult('Tooltip content file not found', false);
+                }
+            } catch (error) {
+                addResult(`Error loading tooltip content: ${error.message}`, false);
+            }
+            
+            addResult('All tests completed!', true);
+        }
+        
+        function openWorkbench() {
+            window.open('workbench.html', '_blank');
+        }
+        
+        function checkConsole() {
+            const iframe = document.getElementById('preview');
+            addResult('Check the browser console for any errors from the iframe', true);
+        }
+        
+        // Auto-run tests on load
+        window.addEventListener('load', () => {
+            setTimeout(runTests, 1000);
+        });
+    </script>
+</body>
+</html>

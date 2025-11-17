@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attack Surface Discovery - Trend Vision One™</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/pages.css">
+    
+    <style>
+        /* Page-specific layout */
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        /* Top Header */
+        .top-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: var(--color-bg-secondary);
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-lg);
+            z-index: var(--z-sticky);
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--tm-red) 0%, var(--tm-red-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-lg);
+        }
+        
+        .product-name {
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+        }
+        
+        .page-title {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .header-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .demo-badge {
+            background-color: var(--color-warning);
+            color: var(--color-text-primary);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+        }
+        
+        .search-box {
+            background-color: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--color-text-secondary);
+            width: 200px;
+            font-size: var(--font-size-sm);
+        }
+        
+        .search-box::placeholder {
+            color: var(--color-text-muted);
+        }
+        
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            font-size: var(--font-size-lg);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
+        }
+        
+        .icon-btn:hover {
+            background-color: var(--color-bg-hover);
+            color: var(--color-text-primary);
+        }
+        
+        /* Side Navigation */
+        .side-nav {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 240px;
+            height: calc(100vh - 60px);
+            background-color: var(--color-bg-secondary);
+            border-right: 1px solid var(--color-border);
+            overflow-y: auto;
+            z-index: var(--z-base);
+        }
+        
+        /* Main Content Area */
+        .main-container {
+            margin-top: 60px;
+            margin-left: 240px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        /* Tabs */
+        .tabs-container {
+            background-color: var(--color-bg-primary);
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            gap: var(--spacing-sm);
+            padding: 0 var(--spacing-lg);
+        }
+        
+        .tab {
+            padding: var(--spacing-md) var(--spacing-lg);
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            position: relative;
+        }
+        
+        .tab:hover {
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+        
+        .tab.active {
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-tertiary);
+            border-bottom-color: var(--tm-red);
+        }
+        
+        .tab-help-icon {
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+            font-size: var(--font-size-xs);
+            cursor: help;
+            color: var(--tm-red-light);
+        }
+        
+        .tab:hover .tab-help-icon {
+            opacity: 1;
+        }
+        
+        /* Content Panels */
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: var(--spacing-lg);
+            gap: var(--spacing-lg);
+            overflow-y: auto;
+        }
+        
+        .left-panel {
+            width: 280px;
+            flex-shrink: 0;
+        }
+        
+        .center-panel {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .right-panel {
+            width: 350px;
+            flex-shrink: 0;
+        }
+        
+        /* Statistics Cards */
+        .stat-card {
+            background-color: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .stat-card:hover {
+            border-color: var(--color-border-light);
+            background-color: var(--color-bg-hover);
+        }
+        
+        .stat-title {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .stat-value {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+        }
+        
+        .stat-badge {
+            display: inline-block;
+            background-color: var(--color-bg-tertiary);
+            padding: 2px 8px;
+            border-radius: var(--radius-xl);
+            font-size: var(--font-size-xs);
+            margin-left: var(--spacing-sm);
+        }
+        
+        /* Chart */
+        .chart-container {
+            height: 300px;
+            display: flex;
+            align-items: flex-end;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg) 0;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--tm-red-light) 0%, var(--tm-red) 100%);
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            position: relative;
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+        
+        .chart-bar:hover {
+            background: linear-gradient(180deg, var(--tm-red) 0%, var(--tm-red-dark) 100%);
+        }
+        
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: var(--font-size-xs);
+            color: var(--color-text-tertiary);
+        }
+        
+        /* Data Source List */
+        .data-source-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--color-border);
+            font-size: var(--font-size-sm);
+        }
+        
+        .data-source-item:last-child {
+            border-bottom: none;
+        }
+        
+        .source-name {
+            color: var(--tm-red-light);
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .status-dot.configured {
+            background-color: var(--color-success);
+        }
+        
+        .status-dot.not-configured {
+            background-color: var(--color-text-muted);
+        }
+        
+        /* Device Table */
+        .device-table-container {
+            padding: 0 var(--spacing-lg) var(--spacing-lg);
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .table-title {
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            text-align: left;
+            padding: var(--spacing-md);
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+            font-weight: var(--font-weight-semibold);
+            border-bottom: 1px solid var(--color-border);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: var(--spacing-md);
+            font-size: var(--font-size-sm);
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        tbody tr:hover {
+            background-color: var(--color-bg-secondary);
+        }
+        
+        .risk-score {
+            color: var(--color-warning);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .device-name {
+            color: var(--tm-red-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="logo-section">
+            <div class="logo-icon">T</div>
+            <span class="product-name">Trend Vision One™</span>
+            <span class="page-title">Attack Surface Discovery</span>
+        </div>
+        <div class="header-actions">
+            <span class="demo-badge">POC DEMO</span>
+            <input type="text" class="search-box" placeholder="Search (Preview)">
+            <button class="icon-btn">🕐</button>
+            <button class="icon-btn">📊</button>
+            <button class="icon-btn" id="helpButton">❓</button>
+            <button class="icon-btn">🔔</button>
+            <div id="userSelector"></div>
+        </div>
+    </header>
+    
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <a href="attack-surface.html" class="active">Attack Surface Discovery</a>
+        <a href="workbench.html">Workbench</a>
+        <a href="endpoint-inventory.html">Endpoint Inventory</a>
+    </nav>
+    
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <div class="tab active" data-tab="devices">
+                📱 Devices
+                <span class="tab-help-icon" data-tooltip="devices">❓</span>
+            </div>
+            <div class="tab" data-tab="internet-facing">
+                🌐 Internet-Facing Assets
+                <span class="tab-help-icon" data-tooltip="internet-facing">❓</span>
+            </div>
+            <div class="tab" data-tab="accounts">
+                👥 Accounts
+                <span class="tab-help-icon" data-tooltip="accounts">❓</span>
+            </div>
+            <div class="tab" data-tab="applications">
+                📦 Applications
+                <span class="tab-help-icon" data-tooltip="applications">❓</span>
+            </div>
+            <div class="tab" data-tab="cloud-assets">
+                ☁️ Cloud Assets
+                <span class="tab-help-icon" data-tooltip="cloud-assets">❓</span>
+            </div>
+            <div class="tab" data-tab="apis">
+                🔌 APIs
+                <span class="tab-help-icon" data-tooltip="apis">❓</span>
+            </div>
+        </div>
+        
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Left Panel - Statistics -->
+            <div class="left-panel">
+                <div class="stat-card">
+                    <div class="stat-title">All discovered devices</div>
+                    <div class="stat-value">15 <span class="stat-badge">0</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Devices can be assessed for risk</div>
+                    <div class="stat-value">15 <span class="stat-badge">0</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Devices with managed agents</div>
+                    <div class="stat-value">15 <span class="stat-badge">0</span></div>
+                </div>
+                <div style="margin-top: var(--spacing-lg); font-size: var(--font-size-xs); color: var(--color-text-muted); line-height: var(--line-height-relaxed);">
+                    Use the filter to modify the device detected period. For unmanaged devices, only devices detected in the last 30 days can be shown.
+                </div>
+            </div>
+            
+            <!-- Center Panel - Chart -->
+            <div class="center-panel">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">DEVICE OVERVIEW</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="chart-container">
+                            <div class="chart-bar" style="height: 60%;">
+                                <div class="chart-label">Nov</div>
+                            </div>
+                            <div class="chart-bar" style="height: 80%;">
+                                <div class="chart-label">Dec</div>
+                            </div>
+                            <div class="chart-bar" style="height: 85%;">
+                                <div class="chart-label">Jan</div>
+                            </div>
+                            <div class="chart-bar" style="height: 90%;">
+                                <div class="chart-label">Feb</div>
+                            </div>
+                            <div class="chart-bar" style="height: 75%;">
+                                <div class="chart-label">Mar</div>
+                            </div>
+                            <div class="chart-bar" style="height: 95%;">
+                                <div class="chart-label">Apr</div>
+                            </div>
+                            <div class="chart-bar" style="height: 100%;">
+                                <div class="chart-label">May</div>
+                            </div>
+                            <div class="chart-bar" style="height: 88%;">
+                                <div class="chart-label">Jun</div>
+                            </div>
+                            <div class="chart-bar" style="height: 92%;">
+                                <div class="chart-label">Jul</div>
+                            </div>
+                            <div class="chart-bar" style="height: 85%;">
+                                <div class="chart-label">Aug</div>
+                            </div>
+                            <div class="chart-bar" style="height: 97%;">
+                                <div class="chart-label">Sep</div>
+                            </div>
+                            <div class="chart-bar" style="height: 93%;">
+                                <div class="chart-label">Oct</div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: var(--spacing-xl); color: var(--color-text-tertiary); font-size: var(--font-size-sm);">
+                            🔵 All discovered devices
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel - Data Sources -->
+            <div class="right-panel">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">CONTRIBUTING DATA SOURCES</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="data-source-item">
+                            <span class="source-name">Endpoint Sensor</span>
+                            <div class="status-indicator">
+                                <span class="status-dot configured"></span>
+                                Configured
+                            </div>
+                        </div>
+                        <div class="data-source-item">
+                            <span class="source-name">Network Sensor</span>
+                            <div class="status-indicator">
+                                <span class="status-dot not-configured"></span>
+                                Not configured
+                            </div>
+                        </div>
+                        <div class="data-source-item">
+                            <span class="source-name">Trend Micro Deep Discovery Inspector</span>
+                            <div class="status-indicator">
+                                <span class="status-dot not-configured"></span>
+                                Not configured
+                            </div>
+                        </div>
+                        <div class="data-source-item">
+                            <span class="source-name">Standard Endpoint Protection</span>
+                            <div class="status-indicator">
+                                <span class="status-dot configured"></span>
+                                Configured
+                            </div>
+                        </div>
+                        <div class="data-source-item">
+                            <span class="source-name">Trend Micro Apex One as a Service</span>
+                            <div class="status-indicator">
+                                <span class="status-dot not-configured"></span>
+                                Not configured
+                            </div>
+                        </div>
+                        <div class="data-source-item">
+                            <span class="source-name">Trend Micro Apex One On-premises</span>
+                            <div class="status-indicator">
+                                <span class="status-dot not-configured"></span>
+                                Not configured
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Device List Table -->
+        <div class="device-table-container">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="table-header">
+                        <div class="table-title">DEVICE LIST (15) ℹ️</div>
+                        <div class="table-actions">
+                            <button class="btn btn-sm">📤 Export</button>
+                            <button class="btn btn-sm">📋 Exception List</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding: 0;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox"></th>
+                                <th>Device name</th>
+                                <th>Asset risk score ⬇️</th>
+                                <th>Device type</th>
+                                <th>Device category</th>
+                                <th>Operating system</th>
+                                <th>IP address</th>
+                                <th>Last user</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td class="device-name">Endpoint-M-CS1\ttrium...</td>
+                                <td class="risk-score">38.0</td>
+                                <td>Desktop</td>
+                                <td>IT</td>
+                                <td>Microsoft Windows...</td>
+                                <td>172.16.31.27</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td class="device-name">Endpoint-M-CS3\ttrium...</td>
+                                <td class="risk-score">38.0</td>
+                                <td>Desktop</td>
+                                <td>IT</td>
+                                <td>Microsoft Windows...</td>
+                                <td>172.16.30.71</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td class="device-name">Endpoint-M-CS2\ttrium...</td>
+                                <td class="risk-score">38.0</td>
+                                <td>Desktop</td>
+                                <td>IT</td>
+                                <td>Microsoft Windows...</td>
+                                <td>172.16.30.142</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td class="device-name">win10-vm-devc2-</td>
+                                <td class="risk-score">0.0</td>
+                                <td>Desktop</td>
+                                <td>IT</td>
+                                <td>Windows 10 10.0...</td>
+                                <td>10.0.0.4</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td class="device-name">Endpoint-M-AS1</td>
+                                <td class="risk-score">0.0</td>
+                                <td>Desktop</td>
+                                <td>IT</td>
+                                <td>Windows 10 10.0...</td>
+                                <td>10.209.63.177</td>
+                                <td>-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Help Panel (sliding from right) -->
+    <aside id="helpPanel" class="help-panel">
+        <div class="help-panel-header">
+            <div class="help-panel-title-container">
+                <h2 id="helpTitle" class="help-panel-title">Help</h2>
+            </div>
+            <button id="closeHelp" class="help-panel-close">×</button>
+        </div>
+        <div id="helpContent" class="help-panel-content">
+            <!-- Dynamic content loaded here -->
+        </div>
+    </aside>
+    
+    <!-- Tooltip Bubble -->
+    <div id="tooltipBubble" class="tooltip-bubble">
+        <div class="tooltip-header">
+            <span id="tooltipTitle"></span>
+            <button id="tooltipClose">×</button>
+        </div>
+        <div id="tooltipContent"></div>
+    </div>
+    
+    <!-- JavaScript Modules -->
+    <script src="assets/js/context-engine.js"></script>
+    <script src="assets/js/help-panel.js"></script>
+    <script src="assets/js/tooltip.js"></script>
+    <script src="assets/js/user-selector.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    <script src="assets/js/content-generator.js"></script>
+    
+    <!-- Page Initialization -->
+    <script>
+        // Initialize context engine
+        const contextEngine = new ContextEngine();
+        contextEngine.setCurrentPage('attack-surface');
+        
+        // Initialize content generator
+        const contentGenerator = new ContentGenerator();
+        
+        // Initialize help panel
+        const helpPanel = new HelpPanel(contextEngine, contentGenerator);
+        
+        // Initialize tooltip manager
+        const tooltipManager = new TooltipManager(contextEngine);
+        
+        // Initialize user selector
+        const userSelector = new UserSelector(contextEngine);
+        
+        // Initialize navigation
+        const navigation = new Navigation(contextEngine);
+        navigation.init();
+        
+        // Connect help button to help panel
+        document.getElementById('helpButton').addEventListener('click', () => {
+            helpPanel.open();
+        });
+        
+        // Connect close button
+        document.getElementById('closeHelp').addEventListener('click', () => {
+            helpPanel.close();
+        });
+        
+        // Connect ESC key to close help panel
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && helpPanel.isOpen) {
+                helpPanel.close();
+            }
+        });
+        
+        // Connect help icons to tooltips
+        document.querySelectorAll('.tab-help-icon').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const tooltipKey = icon.dataset.tooltip;
+                const contextKey = `${contextEngine.context.userType}:attack-surface:${tooltipKey}`;
+                tooltipManager.show(icon, contextKey);
+            });
+        });
+        
+        // Tab switching (visual only)
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                // Don't trigger if clicking help icon
+                if (e.target.classList.contains('tab-help-icon')) {
+                    return;
+                }
+                
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Update context
+                const tabName = tab.dataset.tab;
+                contextEngine.updateContext({ currentSection: tabName });
+            });
+        });
+        
+        console.log('Attack Surface Discovery page initialized');
+        console.log('Current context:', contextEngine.getContext());
+    </script>
+</body>
+</html>

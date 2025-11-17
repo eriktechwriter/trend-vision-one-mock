@@ -1,0 +1,447 @@
+{
+  "admin:attack-surface": {
+    "title": "Attack Surface Discovery",
+    "badge": "AI",
+    "sections": [
+      {
+        "type": "what-is",
+        "title": "What is Attack Surface Discovery?",
+        "content": "Attack Surface Discovery provides comprehensive visibility into all assets in your environment, including devices, internet-facing assets, accounts, applications, cloud resources, and APIs. This helps you understand your organization's exposure to potential threats."
+      },
+      {
+        "type": "how-to",
+        "title": "Key Tasks",
+        "items": [
+          "Configure data sources to discover assets automatically",
+          "Review device risk scores and prioritize remediation",
+          "Monitor internet-facing assets for vulnerabilities",
+          "Export device inventory for compliance reporting",
+          "Set up alerts for new high-risk assets"
+        ]
+      },
+      {
+        "type": "admin-tips",
+        "title": "Admin Tips",
+        "content": "As an administrator, focus on configuring data sources and ensuring complete asset coverage. Regular reviews of the data source status panel help maintain accurate discovery."
+      }
+    ],
+    "actions": [
+      {
+        "type": "chat",
+        "label": "💬 Chat with Companion",
+        "icon": "💬",
+        "primary": true
+      },
+      {
+        "type": "link",
+        "label": "📖 Full Documentation",
+        "icon": "📖",
+        "url": "/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part"
+      }
+    ],
+    "relatedTopics": [
+      {
+        "title": "Data Sources Configuration",
+        "url": "/agentic-docs-poc/docs/configuring-data-sources"
+      },
+      {
+        "title": "Risk Scoring",
+        "url": "/agentic-docs-poc/docs/risk-index-overview"
+      }
+    ],
+    "metadata": {
+      "version": "1.0",
+      "sources": [
+        "/docs/attack-Surface-Risk-Management-Part",
+        "/docs/attack-surface-discovery"
+      ]
+    }
+  },
+  
+  "analyst:attack-surface": {
+    "title": "Attack Surface Discovery",
+    "badge": "AI",
+    "sections": [
+      {
+        "type": "what-is",
+        "title": "What is Attack Surface Discovery?",
+        "content": "Attack Surface Discovery helps you identify and assess all assets in your environment. As a security analyst, you'll use this to investigate potential vulnerabilities and prioritize threat response."
+      },
+      {
+        "type": "how-to",
+        "title": "Analyst Workflow",
+        "items": [
+          "Review high-risk devices and investigate vulnerabilities",
+          "Analyze internet-facing assets for exposure",
+          "Track changes in your attack surface over time",
+          "Correlate asset data with threat intelligence",
+          "Generate reports for incident investigation"
+        ]
+      },
+      {
+        "type": "analyst-tips",
+        "title": "Investigation Tips",
+        "content": "Focus on the risk score trends and newly discovered assets. Use the device details to understand the security posture of each asset and prioritize your investigation efforts."
+      }
+    ],
+    "actions": [
+      {
+        "type": "chat",
+        "label": "💬 Chat with Companion",
+        "icon": "💬",
+        "primary": true
+      },
+      {
+        "type": "link",
+        "label": "📖 Full Documentation",
+        "icon": "📖",
+        "url": "/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part"
+      }
+    ],
+    "relatedTopics": [
+      {
+        "title": "Threat Investigation",
+        "url": "/agentic-docs-poc/docs/investigating-alert"
+      },
+      {
+        "title": "Risk Assessment",
+        "url": "/agentic-docs-poc/docs/risk-assessment"
+      }
+    ]
+  },
+  
+  "admin:workbench": {
+    "title": "Workbench",
+    "badge": "AI",
+    "sections": [
+      {
+        "type": "what-is",
+        "title": "What is Workbench?",
+        "content": "Workbench is your central hub for threat detection and incident response. It aggregates alerts from multiple sources and uses AI to correlate events into actionable insights."
+      },
+      {
+        "type": "how-to",
+        "title": "Key Tasks",
+        "items": [
+          "Configure alert sources and detection rules",
+          "Manage user assignments and escalation workflows",
+          "Set up automated response playbooks",
+          "Monitor SLA compliance and team performance",
+          "Export alerts for compliance and reporting"
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "type": "chat",
+        "label": "💬 Chat with Companion",
+        "icon": "💬",
+        "primary": true
+      },
+      {
+        "type": "link",
+        "label": "📖 Full Documentation",
+        "icon": "📖",
+        "url": "/agentic-docs-poc/docs/workbench"
+      }
+    ],
+    "relatedTopics": [
+      {
+        "title": "Alert Management",
+        "url": "/agentic-docs-poc/docs/workbench-alerts"
+      },
+      {
+        "title": "Response Playbooks",
+        "url": "/agentic-docs-poc/docs/automated-response-playbooks"
+      }
+    ]
+  },
+  
+  "analyst:workbench": {
+    "title": "Workbench",
+    "badge": "AI",
+    "sections": [
+      {
+        "type": "what-is",
+        "title": "What is Workbench?",
+        "content": "Workbench is where you investigate and respond to security alerts. It provides AI-powered insights to help you quickly understand and triage threats."
+      },
+      {
+        "type": "how-to",
+        "title": "Investigation Workflow",
+        "items": [
+          "Review and triage incoming alerts by severity",
+          "Investigate alert details and correlated events",
+          "Take response actions (isolate, block, collect evidence)",
+          "Document findings and close resolved alerts",
+          "Escalate complex incidents to senior analysts"
+        ]
+      },
+      {
+        "type": "analyst-tips",
+        "title": "Investigation Tips",
+        "content": "Use the AI-powered insights to understand the attack timeline. Check the correlation graph to see related events and identify the full scope of an incident."
+      }
+    ],
+    "actions": [
+      {
+        "type": "chat",
+        "label": "💬 Chat with Companion",
+        "icon": "💬",
+        "primary": true
+      },
+      {
+        "type": "link",
+        "label": "📖 Full Documentation",
+        "icon": "📖",
+        "url": "/agentic-docs-poc/docs/workbench"
+      }
+    ],
+    "relatedTopics": [
+      {
+        "title": "Investigating Alerts",
+        "url": "/agentic-docs-poc/docs/investigating-alert"
+      },
+      {
+        "title": "Response Actions",
+        "url": "/agentic-docs-poc/docs/response-actions-intro"
+      }
+    ]
+  },
+  
+  "admin:endpoint-inventory": {
+    "title": "Endpoint Inventory",
+    "badge": "AI",
+    "sections": [
+      {
+        "type": "what-is",
+        "title": "What is Endpoint Inventory?",
+        "content": "Endpoint Inventory provides a comprehensive view of all endpoints in your environment, including workstations, servers, and mobile devices. Use it to manage security policies, track compliance, and monitor endpoint health."
+      },
+      {
+        "type": "how-to",
+        "title": "Key Tasks",
+        "items": [
+          "Configure endpoint sensors and agents",
+          "Assign security policies to endpoint groups",
+          "Monitor agent status and connectivity",
+          "Review compliance violations and remediate",
+          "Manage endpoint lifecycle (onboarding/offboarding)"
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "type": "chat",
+        "label": "💬 Chat with Companion",
+        "icon": "💬",
+        "primary": true
+      },
+      {
+        "type": "link",
+        "label": "📖 Full Documentation",
+        "icon": "📖",
+        "url": "/agentic-docs-poc/docs/endpoint-inventory-intro-part"
+      }
+    ],
+    "relatedTopics": [
+      {
+        "title": "Endpoint Security Policies",
+        "url": "/agentic-docs-poc/docs/endpoint-security-policies"
+      },
+      {
+        "title": "Agent Deployment",
+        "url": "/agentic-docs-poc/docs/deploy-agents"
+      }
+    ]
+  },
+  
+  "analyst:endpoint-inventory": {
+    "title": "Endpoint Inventory",
+    "badge": "AI",
+    "sections": [
+      {
+        "type": "what-is",
+        "title": "What is Endpoint Inventory?",
+        "content": "Endpoint Inventory shows all endpoints in your environment. As an analyst, you'll use this to investigate compromised devices, check security status, and take response actions."
+      },
+      {
+        "type": "how-to",
+        "title": "Investigation Tasks",
+        "items": [
+          "Search for specific endpoints by name, IP, or user",
+          "Review endpoint risk scores and vulnerabilities",
+          "Check installed software and running processes",
+          "Isolate compromised endpoints from the network",
+          "Collect forensic evidence from suspicious devices"
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "type": "chat",
+        "label": "💬 Chat with Companion",
+        "icon": "💬",
+        "primary": true
+      },
+      {
+        "type": "link",
+        "label": "📖 Full Documentation",
+        "icon": "📖",
+        "url": "/agentic-docs-poc/docs/endpoint-inventory-intro-part"
+      }
+    ],
+    "relatedTopics": [
+      {
+        "title": "Endpoint Response Actions",
+        "url": "/agentic-docs-poc/docs/response-actions-intro"
+      },
+      {
+        "title": "Forensics",
+        "url": "/agentic-docs-poc/docs/forensics"
+      }
+    ]
+  },
+  
+  "ciso:attack-surface": {
+    "title": "Attack Surface Discovery",
+    "badge": "AI",
+    "sections": [
+      {
+        "type": "what-is",
+        "title": "Executive Overview",
+        "content": "Attack Surface Discovery provides visibility into your organization's security exposure. Use this dashboard to understand risk trends, asset coverage, and areas requiring investment."
+      },
+      {
+        "type": "how-to",
+        "title": "Key Metrics",
+        "items": [
+          "Monitor overall risk index and trends",
+          "Review asset coverage across business units",
+          "Track internet-facing asset exposure",
+          "Assess compliance with security policies",
+          "Generate executive reports for board meetings"
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "type": "link",
+        "label": "📊 Generate Executive Report",
+        "icon": "📊",
+        "url": "#",
+        "primary": true
+      },
+      {
+        "type": "link",
+        "label": "📖 Full Documentation",
+        "icon": "📖",
+        "url": "/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part"
+      }
+    ]
+  },
+  
+  "viewer:attack-surface": {
+    "title": "Attack Surface Discovery",
+    "badge": "AI",
+    "sections": [
+      {
+        "type": "what-is",
+        "title": "About This View",
+        "content": "This dashboard shows discovered assets and their security status. You have read-only access to view reports and export data."
+      },
+      {
+        "type": "how-to",
+        "title": "Available Actions",
+        "items": [
+          "View asset inventory and statistics",
+          "Export reports in various formats",
+          "Filter and search for specific assets",
+          "View risk scores and trends"
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "type": "link",
+        "label": "📖 Full Documentation",
+        "icon": "📖",
+        "url": "/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part",
+        "primary": true
+      }
+    ]
+  },
+  
+  "_tooltips": {
+    "attack-surface": {
+      "devices-tab": {
+        "title": "Devices Tab",
+        "content": "View all discovered devices including workstations, servers, and network equipment. Each device shows its risk score, operating system, and last seen timestamp."
+      },
+      "internet-facing-tab": {
+        "title": "Internet-Facing Assets",
+        "content": "Monitor assets exposed to the internet including web servers, APIs, and cloud services. These assets require special attention as they are directly accessible to potential attackers."
+      },
+      "accounts-tab": {
+        "title": "Accounts",
+        "content": "Track user accounts across your environment. Identify privileged accounts, inactive accounts, and accounts with weak security configurations."
+      },
+      "risk-index": {
+        "title": "Risk Index",
+        "content": "The Risk Index is a calculated score (0-100) representing your organization's overall security posture. Higher scores indicate greater risk exposure. It's calculated based on device vulnerabilities, misconfigurations, and threat intelligence."
+      },
+      "total-devices": {
+        "title": "Total Devices",
+        "content": "The total number of devices discovered in your environment. This includes all endpoints, servers, network devices, and IoT devices detected by configured data sources."
+      },
+      "data-sources": {
+        "title": "Data Sources",
+        "content": "Data sources are integrations that automatically discover and inventory assets. Common sources include Active Directory, cloud providers (AWS, Azure, GCP), vulnerability scanners, and network discovery tools."
+      }
+    },
+    "workbench": {
+      "alerts-tab": {
+        "title": "Alerts",
+        "content": "Security alerts generated by detection rules and threat intelligence. Each alert represents a potential security incident requiring investigation."
+      },
+      "investigations-tab": {
+        "title": "Investigations",
+        "content": "Active security investigations combining multiple related alerts. Investigations help you understand the full scope of an attack campaign."
+      },
+      "severity-filter": {
+        "title": "Severity Filter",
+        "content": "Filter alerts by severity: Critical (immediate action required), High (investigate within 24h), Medium (investigate within 1 week), Low (review as time permits)."
+      },
+      "status-filter": {
+        "title": "Status Filter",
+        "content": "Filter by investigation status: New (unassigned), In Progress (actively investigating), Resolved (threat mitigated), False Positive (benign activity)."
+      },
+      "correlation-graph": {
+        "title": "Correlation Graph",
+        "content": "Visual representation of related security events. Shows how alerts are connected through common indicators like IP addresses, users, or files."
+      }
+    },
+    "endpoint-inventory": {
+      "endpoints-tab": {
+        "title": "Endpoints",
+        "content": "All managed endpoints including workstations, laptops, and mobile devices. Shows agent status, security policy compliance, and last check-in time."
+      },
+      "servers-tab": {
+        "title": "Servers",
+        "content": "Server inventory including physical servers, virtual machines, and containers. Monitor patch status, running services, and security configurations."
+      },
+      "agent-status": {
+        "title": "Agent Status",
+        "content": "Shows the health of security agents: Online (connected and reporting), Offline (not reporting for >24h), Outdated (agent version needs update)."
+      },
+      "policy-compliance": {
+        "title": "Policy Compliance",
+        "content": "Percentage of endpoints meeting security policy requirements. Policies define required security controls like antivirus, firewall, encryption, and patch levels."
+      },
+      "isolation-action": {
+        "title": "Network Isolation",
+        "content": "Isolate a compromised endpoint from the network to prevent lateral movement. The endpoint can still communicate with the management server for remediation."
+      }
+    }
+  }
+}

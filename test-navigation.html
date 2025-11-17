@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Test - Trend Vision One</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        .top-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #1a1a1a;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-text {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .main-content {
+            margin-left: 240px;
+            margin-top: 60px;
+            padding: 40px;
+            min-height: calc(100vh - 60px);
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        
+        .test-section {
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .test-section h2 {
+            color: #fff;
+            font-size: 20px;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        
+        .test-section p {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #d71921;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .test-button:hover {
+            background-color: #e02a32;
+        }
+        
+        .status-display {
+            background-color: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 16px;
+            margin-top: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #0f0;
+        }
+        
+        .status-display pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="logo-section">
+            <span class="logo-text">Trend Vision One</span>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-sm">Help</button>
+        </div>
+    </header>
+    
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <div class="nav-section-header">Main Navigation</div>
+        <a href="index.html">Home</a>
+        <a href="attack-surface.html">Attack Surface Discovery</a>
+        <a href="workbench.html">Workbench</a>
+        <a href="endpoint-inventory.html">Endpoint Inventory</a>
+        <div class="nav-divider"></div>
+        <div class="nav-section-header">Test Pages</div>
+        <a href="test-navigation.html">Navigation Test</a>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="breadcrumbs"></div>
+        <h1 class="page-title">Navigation Module Test</h1>
+        
+        <div class="test-section">
+            <h2>Current Page Detection</h2>
+            <p>The navigation module should automatically detect the current page and highlight it in the side navigation.</p>
+            <div class="status-display">
+                <pre id="currentPageStatus">Loading...</pre>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Navigation Controls</h2>
+            <p>Test programmatic navigation to different pages:</p>
+            <button class="test-button" onclick="testNavigateTo('attack-surface')">Go to Attack Surface</button>
+            <button class="test-button" onclick="testNavigateTo('workbench')">Go to Workbench</button>
+            <button class="test-button" onclick="testNavigateTo('endpoint-inventory')">Go to Endpoint Inventory</button>
+            <button class="test-button" onclick="testNavigateTo('home')">Go to Home</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>Page Information</h2>
+            <p>Current page configuration:</p>
+            <div class="status-display">
+                <pre id="pageInfoStatus">Loading...</pre>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Available Pages</h2>
+            <p>All pages registered in the navigation system:</p>
+            <div class="status-display">
+                <pre id="pagesListStatus">Loading...</pre>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Refresh Navigation</h2>
+            <p>Test refreshing the navigation state:</p>
+            <button class="test-button" onclick="testRefresh()">Refresh Navigation</button>
+            <div class="status-display">
+                <pre id="refreshStatus">Click refresh to test</pre>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="assets/js/context-engine.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    
+    <script>
+        // Initialize context engine
+        window.contextEngine = new ContextEngine();
+        
+        // Wait for navigation to initialize
+        setTimeout(() => {
+            updateStatus();
+        }, 100);
+        
+        function updateStatus() {
+            if (!window.navigation) {
+                document.getElementById('currentPageStatus').textContent = 'Navigation not initialized';
+                return;
+            }
+            
+            // Current page status
+            const currentPage = window.navigation.getCurrentPage();
+            document.getElementById('currentPageStatus').textContent = 
+                `Current Page ID: ${currentPage.id}\n` +
+                `Title: ${currentPage.title}\n` +
+                `Path: ${currentPage.path}\n` +
+                `Breadcrumbs: ${currentPage.breadcrumbs.join(' / ')}`;
+            
+            // Page info
+            document.getElementById('pageInfoStatus').textContent = 
+                JSON.stringify(currentPage, null, 2);
+            
+            // All pages
+            const allPages = window.navigation.getPages();
+            document.getElementById('pagesListStatus').textContent = 
+                JSON.stringify(allPages, null, 2);
+        }
+        
+        function testNavigateTo(pageId) {
+            if (!window.navigation) {
+                alert('Navigation not initialized');
+                return;
+            }
+            
+            console.log(`Navigating to: ${pageId}`);
+            window.navigation.navigateTo(pageId);
+        }
+        
+        function testRefresh() {
+            if (!window.navigation) {
+                alert('Navigation not initialized');
+                return;
+            }
+            
+            window.navigation.refresh();
+            updateStatus();
+            
+            document.getElementById('refreshStatus').textContent = 
+                `Refreshed at: ${new Date().toLocaleTimeString()}\n` +
+                `Current page: ${window.navigation.currentPage}`;
+        }
+        
+        // Log navigation events
+        if (window.contextEngine) {
+            window.contextEngine.on('pageChanged', (page) => {
+                console.log('Page changed to:', page);
+            });
+        }
+    </script>
+</body>
+</html>

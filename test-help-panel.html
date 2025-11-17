@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Panel Test - Trend Vision One</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-header {
+            margin-bottom: 40px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>Help Panel Component Test</h1>
+            <p class="text-secondary">Testing the Help Panel component with mock content</p>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Controls</h2>
+            <div class="flex gap-md" style="margin-top: 16px;">
+                <button id="openHelpBtn" class="btn btn-primary">
+                    ❓ Open Help Panel
+                </button>
+                <button id="changeContextBtn" class="btn">
+                    🔄 Change Context
+                </button>
+                <button id="changeUserBtn" class="btn">
+                    👤 Change User Type
+                </button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Current Context</h2>
+            <div id="contextDisplay" style="margin-top: 16px;">
+                <code id="contextInfo">Loading...</code>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Instructions</h2>
+            <ul class="help-section-list">
+                <li>Click "Open Help Panel" to open the help panel</li>
+                <li>Press ESC key to close the panel</li>
+                <li>Click the × button to close the panel</li>
+                <li>Change context to see different content</li>
+                <li>Change user type to see role-based content</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/context-engine.js"></script>
+    <script src="assets/js/help-panel.js"></script>
+    <script>
+        // Mock Content Generator for testing
+        class MockContentGenerator {
+            constructor() {
+                this.cache = new Map();
+            }
+
+            async generateContent(contextKey) {
+                // Simulate network delay
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Return mock content based on context
+                const [userType, page, section] = contextKey.split(':');
+
+                return {
+                    title: `Help: ${page || 'Overview'}`,
+                    sections: [
+                        {
+                            type: 'what-is',
+                            title: 'What is this?',
+                            content: `This is the **${page || 'home'}** page for **${userType}** users. This content is dynamically generated based on your current context and role.`
+                        },
+                        {
+                            type: 'how-to',
+                            title: 'How to:',
+                            items: [
+                                'Navigate to different sections',
+                                'Filter and search data',
+                                'Export reports',
+                                'Configure settings'
+                            ]
+                        }
+                    ],
+                    actions: [
+                        {
+                            type: 'chat',
+                            label: 'Chat with Companion',
+                            icon: '💬',
+                            primary: true
+                        },
+                        {
+                            type: 'link',
+                            label: 'Open Full Documentation',
+                            icon: '📖',
+                            url: '/agentic-docs-poc/'
+                        }
+                    ],
+                    relatedTopics: [
+                        { title: 'Getting Started Guide', url: '/agentic-docs-poc/docs/intro' },
+                        { title: 'User Roles & Permissions', url: '/agentic-docs-poc/docs/admin' }
+                    ],
+                    metadata: {
+                        contextKey: contextKey,
+                        generatedAt: new Date().toISOString()
+                    }
+                };
+            }
+        }
+
+        // Initialize components
+        const contextEngine = new ContextEngine();
+        const contentGenerator = new MockContentGenerator();
+        const helpPanel = new HelpPanel(contextEngine, contentGenerator);
+
+        // Set initial context
+        contextEngine.setCurrentPage('test-page');
+        contextEngine.setCurrentSection('overview');
+
+        // Update context display
+        function updateContextDisplay() {
+            const context = contextEngine.getContext();
+            document.getElementById('contextInfo').textContent = JSON.stringify(context, null, 2);
+        }
+
+        updateContextDisplay();
+
+        // Event listeners
+        document.getElementById('openHelpBtn').addEventListener('click', () => {
+            helpPanel.open();
+        });
+
+        document.getElementById('changeContextBtn').addEventListener('click', () => {
+            const pages = ['attack-surface', 'workbench', 'endpoint-inventory'];
+            const sections = ['overview', 'devices', 'alerts', 'settings'];
+            
+            const randomPage = pages[Math.floor(Math.random() * pages.length)];
+            const randomSection = sections[Math.floor(Math.random() * sections.length)];
+            
+            contextEngine.setCurrentPage(randomPage);
+            contextEngine.setCurrentSection(randomSection);
+            updateContextDisplay();
+            
+            if (helpPanel.isOpened()) {
+                helpPanel.refresh();
+            }
+        });
+
+        document.getElementById('changeUserBtn').addEventListener('click', () => {
+            const userTypes = ['admin', 'analyst', 'ciso', 'viewer'];
+            const currentType = contextEngine.getContext().userType;
+            const currentIndex = userTypes.indexOf(currentType);
+            const nextIndex = (currentIndex + 1) % userTypes.length;
+            
+            contextEngine.setUserType(userTypes[nextIndex]);
+            updateContextDisplay();
+            
+            if (helpPanel.isOpened()) {
+                helpPanel.refresh();
+            }
+        });
+
+        // Listen for context changes
+        contextEngine.on('contextUpdated', () => {
+            updateContextDisplay();
+        });
+
+        console.log('Help Panel test initialized');
+        console.log('Context Engine:', contextEngine);
+        console.log('Help Panel:', helpPanel);
+    </script>
+</body>
+</html>
