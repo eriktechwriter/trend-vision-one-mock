@@ -647,14 +647,6 @@
     </aside>
     
     <!-- Tooltip Bubble -->
-    <div id="tooltipBubble" class="tooltip-bubble">
-        <div class="tooltip-header">
-            <span id="tooltipTitle"></span>
-            <button id="tooltipClose">×</button>
-        </div>
-        <div id="tooltipContent"></div>
-    </div>
-    
     <!-- JavaScript Modules -->
     <script src="assets/js/context-engine.js"></script>
     <script src="assets/js/help-panel.js"></script>
@@ -707,8 +699,9 @@
             icon.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const tooltipKey = icon.dataset.tooltip;
-                const contextKey = `${contextEngine.context.userType}:attack-surface:${tooltipKey}`;
-                tooltipManager.show(icon, contextKey);
+                console.log('Tooltip clicked:', tooltipKey);
+                // Just pass the key directly, let tooltip.js handle the lookup
+                tooltipManager.show(icon, tooltipKey);
             });
         });
         
