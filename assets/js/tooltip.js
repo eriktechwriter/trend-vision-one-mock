@@ -240,22 +240,39 @@ class TooltipManager {
     
     /**
      * Load tooltip content based on context key
-     * @param {string} tooltipKey - Context key for tooltip content (e.g., "devices-tab", "risk-index")
+     * @param {string} tooltipKey - Context key for tooltip content (e.g., "devices-tab", "risk-index" or "admin:attack-surface:devices")
      * @returns {Promise<Object>} Tooltip content object
      * @private
      */
     async loadTooltipContent(tooltipKey) {
         try {
-            // Get current context
-            const context = this.contextEngine.getContext();
-            const page = context.currentPage;
-            const userType = context.userType;
+            // Parse context key if it's in format "userType:page:key"
+            let page, key, userType;
+            
+            if (tooltipKey.includes(':')) {
+                const parts = tooltipKey.split(':');
+                if (parts.length === 3) {
+                    [userType, page, key] = parts;
+                } else {
+                    // Fallback to current context
+                    const context = this.contextEngine.getContext();
+                    page = context.currentPage;
+                    userType = context.userType;
+                    key = tooltipKey;
+                }
+            } else {
+                // Get current context
+                const context = this.contextEngine.getContext();
+                page = context.currentPage;
+                userType = context.userType;
+                key = tooltipKey;
+            }
             
             // Use ContentGenerator if available
             if (this.contentGenerator) {
                 const tooltipData = await this.contentGenerator.fetchTooltipContent(
                     page,
-                    tooltipKey,
+                    key,
                     userType
                 );
                 
@@ -270,13 +287,28 @@ class TooltipManager {
             }
             
             const allTooltips = await response.json();
-            const tooltipData = allTooltips[page]?.[tooltipKey];
+            
+            // Try with the key as-is first
+            let tooltipData = allTooltips[page]?.[key];
+            
+            // If not found, try adding "-tab" suffix
+            if (!tooltipData && !key.endsWith('-tab')) {
+                tooltipData = allTooltips[page]?.[`${key}-tab`];
+            }
+            
+            // If still not found, try other common patterns
+            if (!tooltipData) {
+                // Try without "-tab" suffix
+                const keyWithoutTab = key.replace('-tab', '');
+                tooltipData = allTooltips[page]?.[keyWithoutTab];
+            }
             
             if (tooltipData) {
                 return this.formatTooltipData(tooltipData, userType);
             }
             
             // Fallback content
+            console.warn(`Tooltip content not found for key: ${key} on page: ${page}`);
             return {
                 title: 'Help',
                 text: 'Context-specific help information will appear here.'
