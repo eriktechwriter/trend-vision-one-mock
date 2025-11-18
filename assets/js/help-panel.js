@@ -145,19 +145,19 @@ class HelpPanel {
             });
         }
         
-        // Render actions
-        if (content.actions && Array.isArray(content.actions)) {
-            const actionsEl = this.renderActions(content.actions);
-            if (actionsEl) {
-                container.appendChild(actionsEl);
-            }
-        }
-        
         // Render related topics
         if (content.relatedTopics && Array.isArray(content.relatedTopics)) {
             const relatedEl = this.renderRelatedTopics(content.relatedTopics);
             if (relatedEl) {
                 container.appendChild(relatedEl);
+            }
+        }
+        
+        // Render actions (moved to bottom)
+        if (content.actions && Array.isArray(content.actions)) {
+            const actionsEl = this.renderActions(content.actions);
+            if (actionsEl) {
+                container.appendChild(actionsEl);
             }
         }
         

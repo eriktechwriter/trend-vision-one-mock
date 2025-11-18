@@ -28,13 +28,13 @@
     "actions": [
       {
         "type": "chat",
-        "label": "💬 Chat with Companion",
+        "label": "Chat with Companion",
         "icon": "💬",
         "primary": true
       },
       {
         "type": "link",
-        "label": "📖 Full Documentation",
+        "label": "Full Documentation",
         "icon": "📖",
         "url": "/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part"
       }
@@ -87,13 +87,13 @@
     "actions": [
       {
         "type": "chat",
-        "label": "💬 Chat with Companion",
+        "label": "Chat with Companion",
         "icon": "💬",
         "primary": true
       },
       {
         "type": "link",
-        "label": "📖 Full Documentation",
+        "label": "Full Documentation",
         "icon": "📖",
         "url": "/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part"
       }
@@ -134,13 +134,13 @@
     "actions": [
       {
         "type": "chat",
-        "label": "💬 Chat with Companion",
+        "label": "Chat with Companion",
         "icon": "💬",
         "primary": true
       },
       {
         "type": "link",
-        "label": "📖 Full Documentation",
+        "label": "Full Documentation",
         "icon": "📖",
         "url": "/agentic-docs-poc/docs/workbench"
       }
@@ -186,13 +186,13 @@
     "actions": [
       {
         "type": "chat",
-        "label": "💬 Chat with Companion",
+        "label": "Chat with Companion",
         "icon": "💬",
         "primary": true
       },
       {
         "type": "link",
-        "label": "📖 Full Documentation",
+        "label": "Full Documentation",
         "icon": "📖",
         "url": "/agentic-docs-poc/docs/workbench"
       }
@@ -233,13 +233,13 @@
     "actions": [
       {
         "type": "chat",
-        "label": "💬 Chat with Companion",
+        "label": "Chat with Companion",
         "icon": "💬",
         "primary": true
       },
       {
         "type": "link",
-        "label": "📖 Full Documentation",
+        "label": "Full Documentation",
         "icon": "📖",
         "url": "/agentic-docs-poc/docs/endpoint-inventory-intro-part"
       }
@@ -280,13 +280,13 @@
     "actions": [
       {
         "type": "chat",
-        "label": "💬 Chat with Companion",
+        "label": "Chat with Companion",
         "icon": "💬",
         "primary": true
       },
       {
         "type": "link",
-        "label": "📖 Full Documentation",
+        "label": "Full Documentation",
         "icon": "📖",
         "url": "/agentic-docs-poc/docs/endpoint-inventory-intro-part"
       }
@@ -334,7 +334,7 @@
       },
       {
         "type": "link",
-        "label": "📖 Full Documentation",
+        "label": "Full Documentation",
         "icon": "📖",
         "url": "/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part"
       }
@@ -364,7 +364,7 @@
     "actions": [
       {
         "type": "link",
-        "label": "📖 Full Documentation",
+        "label": "Full Documentation",
         "icon": "📖",
         "url": "/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part",
         "primary": true
