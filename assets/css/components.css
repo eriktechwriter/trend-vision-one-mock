@@ -726,3 +726,74 @@
 .tab.active .tab-help-icon {
     color: #ffffff;
 }
+
+
+/* ===== Downloadable Guides ===== */
+
+.help-downloadable-guides {
+    margin-top: var(--spacing-xl);
+}
+
+.help-guides-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--spacing-md) 0 0 0;
+}
+
+.help-guide-item {
+    margin-bottom: var(--spacing-sm);
+}
+
+.help-guide-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--color-text-primary);
+    transition: all var(--transition-fast);
+}
+
+.help-guide-link:hover {
+    background-color: var(--color-bg-hover);
+    border-color: var(--tm-red);
+    transform: translateX(4px);
+}
+
+.guide-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.guide-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.guide-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+.guide-meta {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-tertiary);
+}
+
+.guide-download {
+    font-size: 20px;
+    color: var(--tm-red);
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: opacity var(--transition-fast);
+}
+
+.help-guide-link:hover .guide-download {
+    opacity: 1;
+}

@@ -145,7 +145,15 @@ class HelpPanel {
             });
         }
         
-        // Render related topics
+        // Render downloadable guides
+        if (content.downloadableGuides && Array.isArray(content.downloadableGuides)) {
+            const guidesEl = this.renderDownloadableGuides(content.downloadableGuides);
+            if (guidesEl) {
+                container.appendChild(guidesEl);
+            }
+        }
+        
+        // Render related topics (legacy support)
         if (content.relatedTopics && Array.isArray(content.relatedTopics)) {
             const relatedEl = this.renderRelatedTopics(content.relatedTopics);
             if (relatedEl) {
@@ -276,6 +284,55 @@ class HelpPanel {
             link.textContent = topic.title;
             link.target = '_blank';
             link.rel = 'noopener noreferrer';
+            item.appendChild(link);
+            list.appendChild(item);
+        });
+        
+        container.appendChild(list);
+        return container;
+    }
+    
+    /**
+     * Render downloadable guides
+     * @param {Array} guides - Array of guide objects
+     * @returns {HTMLElement} Downloadable guides container
+     */
+    renderDownloadableGuides(guides) {
+        const container = document.createElement('div');
+        container.className = 'help-downloadable-guides';
+        
+        const title = document.createElement('h3');
+        title.className = 'help-section-title';
+        title.textContent = 'Downloadable Guides';
+        container.appendChild(title);
+        
+        const list = document.createElement('ul');
+        list.className = 'help-guides-list';
+        
+        guides.forEach(guide => {
+            const item = document.createElement('li');
+            item.className = 'help-guide-item';
+            
+            const link = document.createElement('a');
+            link.href = '#';
+            link.className = 'help-guide-link';
+            link.innerHTML = `
+                <span class="guide-icon">📄</span>
+                <span class="guide-info">
+                    <span class="guide-title">${guide.title}</span>
+                    <span class="guide-meta">${guide.filename} • ${guide.size}</span>
+                </span>
+                <span class="guide-download">⬇</span>
+            `;
+            
+            // Prevent actual download (fake link)
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log(`Download requested: ${guide.filename}`);
+                // Show a message that this is a demo
+                alert(`This is a demo. In production, "${guide.title}" would download here.`);
+            });
+            
             item.appendChild(link);
             list.appendChild(item);
         });
