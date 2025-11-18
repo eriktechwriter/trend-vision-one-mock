@@ -36,7 +36,7 @@
         "type": "link",
         "label": "Full Documentation",
         "icon": "📖",
-        "url": "/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part"
+        "url": "https://eriktechwriter.github.io/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part"
       }
     ],
     "downloadableGuides": [
@@ -96,7 +96,7 @@
         "type": "link",
         "label": "Full Documentation",
         "icon": "📖",
-        "url": "/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part"
+        "url": "https://eriktechwriter.github.io/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part"
       }
     ],
     "downloadableGuides": [
@@ -144,7 +144,7 @@
         "type": "link",
         "label": "Full Documentation",
         "icon": "📖",
-        "url": "/agentic-docs-poc/docs/workbench"
+        "url": "https://eriktechwriter.github.io/agentic-docs-poc/docs/workbench"
       }
     ],
     "downloadableGuides": [
@@ -197,7 +197,7 @@
         "type": "link",
         "label": "Full Documentation",
         "icon": "📖",
-        "url": "/agentic-docs-poc/docs/workbench"
+        "url": "https://eriktechwriter.github.io/agentic-docs-poc/docs/workbench"
       }
     ],
     "downloadableGuides": [
@@ -245,7 +245,7 @@
         "type": "link",
         "label": "Full Documentation",
         "icon": "📖",
-        "url": "/agentic-docs-poc/docs/endpoint-inventory-intro-part"
+        "url": "https://eriktechwriter.github.io/agentic-docs-poc/docs/endpoint-inventory-intro-part"
       }
     ],
     "downloadableGuides": [
@@ -293,7 +293,7 @@
         "type": "link",
         "label": "Full Documentation",
         "icon": "📖",
-        "url": "/agentic-docs-poc/docs/endpoint-inventory-intro-part"
+        "url": "https://eriktechwriter.github.io/agentic-docs-poc/docs/endpoint-inventory-intro-part"
       }
     ],
     "downloadableGuides": [
@@ -342,7 +342,7 @@
         "type": "link",
         "label": "Full Documentation",
         "icon": "📖",
-        "url": "/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part"
+        "url": "https://eriktechwriter.github.io/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part"
       }
     ]
   },
@@ -371,7 +371,7 @@
         "type": "link",
         "label": "Full Documentation",
         "icon": "📖",
-        "url": "/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part",
+        "url": "https://eriktechwriter.github.io/agentic-docs-poc/docs/attack-Surface-Risk-Management-Part",
         "primary": true
       }
     ]
