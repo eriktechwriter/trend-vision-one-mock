@@ -647,6 +647,16 @@
     </aside>
     
     <!-- Tooltip Bubble -->
+    <div class="tooltip-bubble" id="tooltipBubble">
+        <div class="tooltip-header">
+            <span class="tooltip-title" id="tooltipTitle">Tab Help</span>
+            <button class="tooltip-close" id="tooltipClose">×</button>
+        </div>
+        <div class="tooltip-content" id="tooltipContent">
+            Loading...
+        </div>
+    </div>
+    
     <!-- JavaScript Modules -->
     <script src="assets/js/context-engine.js"></script>
     <script src="assets/js/help-panel.js"></script>
@@ -666,9 +676,6 @@
         
         // Initialize help panel
         const helpPanel = new HelpPanel(contextEngine, contentGenerator);
-        
-        // Initialize tooltip manager
-        const tooltipManager = new TooltipManager(contextEngine);
         
         // Initialize user selector
         const userSelector = new UserSelector(contextEngine);
@@ -694,15 +701,163 @@
             }
         });
         
-        // Connect help icons to tooltips
+        // Tooltip Management (copied from working mockup)
+        const tooltipBubble = document.getElementById('tooltipBubble');
+        const tooltipTitle = document.getElementById('tooltipTitle');
+        const tooltipContent = document.getElementById('tooltipContent');
+        const tooltipClose = document.getElementById('tooltipClose');
+        let currentTooltip = null;
+        
+        // Tooltip content by tab and user type
+        const tooltipData = {
+            devices: {
+                admin: {
+                    title: 'Devices',
+                    content: 'View and manage all endpoints across your network. Configure device policies, assess risk scores, and ensure comprehensive coverage. Use this view to identify unmanaged devices and verify sensor deployments.'
+                },
+                analyst: {
+                    title: 'Devices',
+                    content: 'Investigate endpoints for potential threats or anomalies. Focus on high-risk devices, track behavioral changes, and identify devices that may be compromised or exhibiting unusual activity.'
+                },
+                ciso: {
+                    title: 'Devices',
+                    content: 'Executive overview of endpoint security posture. Assess device coverage, track compliance metrics, and identify gaps in protection that may require investment or policy changes.'
+                },
+                viewer: {
+                    title: 'Devices',
+                    content: 'View discovered devices across your organization. Monitor device inventory trends and review current statistics. Contact your security team for detailed analysis or configuration changes.'
+                }
+            },
+            'internet-facing': {
+                admin: {
+                    title: 'Internet-Facing Assets',
+                    content: 'Manage external-facing infrastructure including web servers, mail servers, and remote access points. Configure scanning policies and manage vulnerability assessments for exposed assets.'
+                },
+                analyst: {
+                    title: 'Internet-Facing Assets',
+                    content: 'Monitor external attack surface for potential exploitation attempts. Prioritize investigation of publicly exposed assets with known vulnerabilities or suspicious access patterns.'
+                },
+                ciso: {
+                    title: 'Internet-Facing Assets',
+                    content: 'Strategic view of your organization\'s external exposure. Understand which assets are internet-accessible, assess associated risks, and track efforts to minimize attack surface.'
+                },
+                viewer: {
+                    title: 'Internet-Facing Assets',
+                    content: 'View your organization\'s internet-facing infrastructure. Review which assets are publicly accessible and their current security status.'
+                }
+            },
+            accounts: {
+                admin: {
+                    title: 'Accounts',
+                    content: 'Manage user accounts and access permissions across your environment. Configure authentication policies, review privileged accounts, and enforce least-privilege principles.'
+                },
+                analyst: {
+                    title: 'Accounts',
+                    content: 'Investigate suspicious account activity including unusual logins, privilege escalations, and credential misuse. Track account behavior patterns to identify potential compromises.'
+                },
+                ciso: {
+                    title: 'Accounts',
+                    content: 'Oversight of identity and access management posture. Review privileged account usage, assess authentication controls, and track identity-related risk metrics.'
+                },
+                viewer: {
+                    title: 'Accounts',
+                    content: 'View account inventory and activity summaries. Monitor user authentication trends and review current account statistics.'
+                }
+            },
+            applications: {
+                admin: {
+                    title: 'Applications',
+                    content: 'Manage discovered applications across your environment. Track software inventory, identify unauthorized applications, and configure application control policies.'
+                },
+                analyst: {
+                    title: 'Applications',
+                    content: 'Investigate application behavior and identify potentially malicious software. Focus on unknown applications, suspicious processes, and anomalous application activity.'
+                },
+                ciso: {
+                    title: 'Applications',
+                    content: 'Strategic view of application landscape. Understand software inventory, assess application-related risks, and track shadow IT or unauthorized software usage.'
+                },
+                viewer: {
+                    title: 'Applications',
+                    content: 'View discovered applications across your organization. Review application inventory and usage statistics.'
+                }
+            },
+            'cloud-assets': {
+                admin: {
+                    title: 'Cloud Assets',
+                    content: 'Manage cloud infrastructure across AWS, Azure, GCP, and other providers. Configure cloud security policies, monitor misconfigurations, and ensure compliance with cloud best practices.'
+                },
+                analyst: {
+                    title: 'Cloud Assets',
+                    content: 'Investigate cloud-based threats and misconfigurations. Focus on exposed storage, overly permissive access controls, and suspicious activity in cloud environments.'
+                },
+                ciso: {
+                    title: 'Cloud Assets',
+                    content: 'Executive oversight of cloud security posture. Assess multi-cloud risk exposure, track cloud adoption patterns, and evaluate cloud security investments and controls.'
+                },
+                viewer: {
+                    title: 'Cloud Assets',
+                    content: 'View cloud infrastructure inventory across providers. Review cloud asset statistics and current security status.'
+                }
+            },
+            apis: {
+                admin: {
+                    title: 'APIs',
+                    content: 'Manage API endpoints and integrations. Configure API security policies, monitor API usage, and track API vulnerabilities or authentication issues.'
+                },
+                analyst: {
+                    title: 'APIs',
+                    content: 'Investigate API abuse, unauthorized access attempts, and anomalous API usage patterns. Identify APIs that may be targets for exploitation or data exfiltration.'
+                },
+                ciso: {
+                    title: 'APIs',
+                    content: 'Strategic view of API security landscape. Understand API exposure, assess data access risks through APIs, and track API security governance.'
+                },
+                viewer: {
+                    title: 'APIs',
+                    content: 'View API endpoints discovered in your environment. Review API inventory and connection statistics.'
+                }
+            }
+        };
+        
+        // Handle tooltip icon clicks
         document.querySelectorAll('.tab-help-icon').forEach(icon => {
             icon.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const tooltipKey = icon.dataset.tooltip;
-                console.log('Tooltip clicked:', tooltipKey);
-                // Just pass the key directly, let tooltip.js handle the lookup
-                tooltipManager.show(icon, tooltipKey);
+                
+                const tabType = icon.dataset.tooltip;
+                const userType = contextEngine.context.userType;
+                const data = tooltipData[tabType][userType];
+                
+                // Update tooltip content
+                tooltipTitle.innerHTML = `${data.title} <span class="tooltip-badge">AI</span>`;
+                tooltipContent.textContent = data.content;
+                
+                // Position tooltip
+                const rect = icon.getBoundingClientRect();
+                tooltipBubble.style.left = rect.left - 160 + 'px';
+                tooltipBubble.style.top = rect.bottom + 10 + 'px';
+                
+                // Show tooltip
+                tooltipBubble.classList.add('active');
+                currentTooltip = tabType;
             });
+        });
+        
+        // Close tooltip
+        tooltipClose.addEventListener('click', () => {
+            tooltipBubble.classList.remove('active');
+            currentTooltip = null;
+        });
+        
+        // Close tooltip when clicking outside
+        document.addEventListener('click', (e) => {
+            if (currentTooltip && 
+                !tooltipBubble.contains(e.target) && 
+                !e.target.classList.contains('tab-help-icon')) {
+                tooltipBubble.classList.remove('active');
+                currentTooltip = null;
+            }
         });
         
         // Tab switching (visual only)
