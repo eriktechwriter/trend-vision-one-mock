@@ -216,7 +216,17 @@ class HelpPanel {
             
             section.items.forEach(item => {
                 const itemEl = document.createElement('li');
+                itemEl.className = 'task-link';
                 itemEl.textContent = item;
+                
+                // Make items clickable (fake links to help pages)
+                itemEl.style.cursor = 'pointer';
+                itemEl.addEventListener('click', () => {
+                    console.log(`Task clicked: ${item}`);
+                    // Show demo message
+                    alert(`This is a demo. In production, this would open the help page:\n\n"${item}"`);
+                });
+                
                 listEl.appendChild(itemEl);
             });
             

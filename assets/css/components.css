@@ -797,3 +797,53 @@
 .help-guide-link:hover .guide-download {
     opacity: 1;
 }
+
+
+/* ===== Help Panel Section Lists (Key Tasks as Links) ===== */
+
+.help-section-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--spacing-md) 0 0 0;
+}
+
+.help-section-list li {
+    margin-bottom: var(--spacing-sm);
+    padding-left: var(--spacing-md);
+    position: relative;
+}
+
+.help-section-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--tm-red);
+    font-weight: bold;
+}
+
+.help-section-list li a,
+.help-section-list li.task-link {
+    color: var(--color-link);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: inline-block;
+}
+
+.help-section-list li a:hover,
+.help-section-list li.task-link:hover {
+    color: var(--tm-red);
+    text-decoration: underline;
+}
+
+/* For how-to sections specifically */
+.help-section-how-to .help-section-list li {
+    cursor: pointer;
+    color: var(--color-link);
+    transition: all var(--transition-fast);
+}
+
+.help-section-how-to .help-section-list li:hover {
+    color: var(--tm-red);
+    text-decoration: underline;
+}
