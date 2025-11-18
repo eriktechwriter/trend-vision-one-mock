@@ -135,17 +135,6 @@ class HelpPanel {
         const container = document.createElement('div');
         container.className = 'help-content-container';
         
-        // Render context info (for transparency)
-        if (content.metadata && content.metadata.contextKey) {
-            const contextInfo = document.createElement('div');
-            contextInfo.className = 'help-context-info';
-            contextInfo.innerHTML = `
-                <span class="help-context-label">Context:</span>
-                <code>${content.metadata.contextKey}</code>
-            `;
-            container.appendChild(contextInfo);
-        }
-        
         // Render sections
         if (content.sections && Array.isArray(content.sections)) {
             content.sections.forEach(section => {
